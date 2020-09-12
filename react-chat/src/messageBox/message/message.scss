@@ -1,0 +1,23 @@
+.message {
+  background-color: #003049;
+  color: rgba(255, 255, 255, .8);
+  max-width: 600px;
+  border-radius: 25px 10px 10px 0;
+  font-size: 15px;
+  padding: 10px;
+  word-wrap: break-word;
+  margin-top: 10px;
+
+  &-header {
+    color: #eae2b7;
+    font-size: 18px;
+    margin-bottom: 5px;
+  }
+
+  &-footer {
+    margin-top: 5px;
+    font-size: 13px;
+    display: flex;
+    justify-content: flex-end;
+  }
+}

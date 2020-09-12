@@ -1,0 +1,12 @@
+.message-input-box {
+  width: 80%;
+
+  &__inp {
+    width: 100%;
+    border-radius: 6px;
+    color: rgba(255, 255,255, .5);
+    border: 1px solid rgba(255, 255,255, .5);
+    background-color: transparent;
+    padding: 10px;
+  }
+}
