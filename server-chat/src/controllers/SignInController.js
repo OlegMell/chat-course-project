@@ -5,14 +5,13 @@ const AccountService = require('../services/AccountService');
 class SignInController {
   static async signIn(req, res) {
     const accountService = new AccountService();
-    console.log(req.body);
     accountService.findOne(req.body).then((data) => {
       if (data === null) {
         return res.status(404).json({message: 'User not found'});
       }
       if (data.password === md5(req.body.password)) {
         return res.status(200).json({
-          login: data.email,
+          user: data,
           token: jwt.sign({login: data.email}, process.env.TOKEN_KEY),
         });
       } else {

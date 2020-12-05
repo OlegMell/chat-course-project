@@ -30,9 +30,9 @@ export default function Auth() {
       }
     }).then(async (res) => {
       if (res.status === 200) {
-        const { token, login } = await res.json();
+        const { token, user } = await res.json();
         localStorage.setItem('user', JSON.stringify(token));
-        localStorage.setItem('user-email', login);
+        localStorage.setItem('user-email', user.email);
         history.replace({pathname: '/chat'});
       } else if (res.status === 404) {
         userNotAuthorize(await res.json());
@@ -41,6 +41,24 @@ export default function Auth() {
       console.log('LOL^^ ', err);
     })
   }
+
+  const signUpHandler = (userData) => {
+    fetch("http://localhost:9999/api/auth/sign-up/", {
+      method: "PUT",
+      body: JSON.stringify(userData),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then(async (res) => {
+      if (res.status === 200) {
+        const { token, login } = await res.json();
+        localStorage.setItem('user', JSON.stringify(token));
+        localStorage.setItem('user-email', login);
+        history.replace({pathname: '/chat'});
+        console.log("re");
+      }
+    });
+  };
 
   return (
       <Router>
@@ -60,7 +78,7 @@ export default function Auth() {
                   <SignIn cb={f}/>
                 </Route>
                 <Route path={`${path}/sign-up`}>
-                  <SignUp/>
+                  <SignUp cb={signUpHandler}/>
                 </Route>
               </Switch>
             </div>

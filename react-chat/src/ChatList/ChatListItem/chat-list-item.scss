@@ -5,6 +5,7 @@
   color: #eae2b7;
   padding: 10px;
   box-sizing: border-box;
+  height: 100px;
 
   .img-wrapper {
     width: 50px;
@@ -16,6 +17,7 @@
       width: 45px;
       height: 45px;
     }
+
     .profile-img {
       width: 100%;
       object-fit: cover;
@@ -23,10 +25,17 @@
     }
   }
 
-  //.chat-name {
-  //
-  //  @media (max-width: 576px) {
-  //    display: none;
-  //  }
-  //}
+  .chat-name-wrapper {
+    display: flex;
+    width: 70%;
+    justify-content: space-between;
+    align-items: center;
+
+    .chat-item-badge {
+      width: 10px;
+      height: 10px;
+      background-color: #f77f00;
+      border-radius: 50%;
+    }
+  }
 }

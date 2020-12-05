@@ -5,7 +5,7 @@ import {
   Route, Redirect
 } from 'react-router-dom';
 import PrivateRoute from "./PrivateRoute";
-import Chat from "./Chat";
+import Chat from "./chat/Chat";
 import Auth from "./auth/Auth";
 import Alert from "./alert/Alert";
 import {AlertProvider} from "./alert/AlertContext";

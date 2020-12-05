@@ -1,12 +1,40 @@
 .message-input-box {
-  width: 80%;
+  width: 90%;
+  display: flex;
+  align-items: center;
 
   &__inp {
     width: 100%;
     border-radius: 6px;
-    color: rgba(255, 255,255, .5);
-    border: 1px solid rgba(255, 255,255, .5);
+    color: rgba(255, 255, 255, 1);
+    border: 1px solid rgba(255, 255, 255, .5);
     background-color: transparent;
     padding: 10px;
+    height: 50px;
+    max-height: 150px;
+    resize: none;
+  }
+
+  .emoji-picker-react {
+    position: absolute;
+    bottom: 150px;
+    background-color: transparent;
+    box-shadow: none;
+    width: 400px;
+
+    .icn-smileys_people {
+      color: #eae2b7;
+    }
+
+    .emoji-search {
+      background-color: transparent;
+      color: #eae2b7;
+    }
+
+    .emoji-group {
+      &:before {
+        background-color: transparent;
+      }
+    }
   }
 }

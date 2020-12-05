@@ -5,5 +5,18 @@
   border-right: 1px solid rgba(0, 0, 0, .3);
   background-color: #003049;
 
-  //width: 200px;
+  &__footer {
+    position: absolute;
+    width: 100%;
+    min-height: 150px;
+    bottom: 0;
+    display: flex;
+
+    &-wrapper {
+      margin: 0 auto;
+      position: relative;
+      height: 150px;
+      width: 400px;
+    }
+  }
 }

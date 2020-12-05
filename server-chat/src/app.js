@@ -13,7 +13,6 @@ dbInit
     .then(() => server.listen(9999, () => {
 
 
-
       console.log('server has been' +
           ' started')
     }))

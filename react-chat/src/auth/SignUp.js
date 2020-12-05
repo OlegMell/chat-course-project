@@ -1,5 +1,5 @@
 import React from "react";
-import { Field, Form, Formik } from "formik";
+import {Field, Form, Formik} from "formik";
 import * as Yup from 'yup';
 
 const SignupSchema = Yup.object().shape({
@@ -18,7 +18,7 @@ const SignupSchema = Yup.object().shape({
       .required('Required'),
 });
 
-export default function SignUp() {
+export default function SignUp({cb}) {
   return (
       <div className={'sign-up-box'}>
         <Formik
@@ -30,9 +30,7 @@ export default function SignUp() {
               repeatPassword: '',
             }}
             validationSchema={SignupSchema}
-            onSubmit={values => {
-              console.log(JSON.stringify(values, null, 2));
-            }}
+            onSubmit={cb}
         >
           {({errors, touched}) => (
               <Form className={'form h-100'}>
@@ -99,7 +97,7 @@ export default function SignUp() {
                   />
                   {errors.repeatPassword && touched.repeatPassword ? (
                       <small
-                             className="form-text text-muted">{errors.repeatPassword}</small>
+                          className="form-text text-muted">{errors.repeatPassword}</small>
                   ) : null}
                 </div>
                 <button type={'submit'} className={'btn btn-primary'}>Create

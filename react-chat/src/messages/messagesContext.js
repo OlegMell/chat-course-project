@@ -8,14 +8,15 @@ export const useMessages = () => {
 
 export const MessagesProvider = ({ children }) => {
   const [messages, setMessages] = useState([]);
+  const [chat, setChat] = useState('');
 
-  const changeMessages = currMessages => {
-    // console.log(currMessages);
-    setMessages(currMessages);
+  const changeMessages = ({messages, chatRoom}) => {
+    setMessages(messages);
+    setChat(chatRoom);
   };
 
   return (
-      <MessagesContext.Provider value={ {messages, changeMessages} }>
+      <MessagesContext.Provider value={ {messages, chat, changeMessages} }>
         { children }
       </MessagesContext.Provider>
   )

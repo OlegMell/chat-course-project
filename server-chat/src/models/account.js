@@ -10,7 +10,8 @@ Account.init({
   lastname: Sequelize.STRING,
   phone: Sequelize.STRING,
   username: Sequelize.STRING,
-  bio: Sequelize.STRING
+  bio: Sequelize.STRING,
+  image: Sequelize.STRING
 }, { sequelize, modelName: 'accounts' });
 
 module.exports = Account;

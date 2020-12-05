@@ -1,48 +1,23 @@
-.user-box {
+.add-chat-btn {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #eae2b7;
+  color: #003049;
   display: flex;
+  justify-content: center;
   align-items: center;
-  justify-content: flex-end;
-  width: 100px;
+  position: absolute;
+  font-size: 40px;
   cursor: pointer;
-  order: 1;
-  position: relative;
-  right: 0;
+  bottom: 50px;
+  left: 45%;
+  z-index: 99999;
 
-  .username {
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: rgba(0, 0, 0, .8);
+  &:hover {
+    -webkit-animation: heartbeat 1.5s ease-in-out infinite both;
+    animation: heartbeat 1.5s ease-in-out infinite both;
   }
-
-  .img-wrapper {
-    width: 60px;
-    height: 60px;
-    object-fit: cover;
-    object-position: center;
-    margin-left: 10px;
-    border-radius: 50%;
-    border: none;
-    overflow: hidden;
-
-    @media (max-width: 576px) {
-      width: 45px;
-      height: 45px;
-    }
-
-    img {
-      width: 100%;
-    }
-
-  }
-
-  &-menu {
-    display: none;
-  }
-}
-
-.hover {
-  -webkit-animation: heartbeat 1.5s ease-in-out infinite both;
-  animation: heartbeat 1.5s ease-in-out infinite both;
 }
 
 @-webkit-keyframes heartbeat {
