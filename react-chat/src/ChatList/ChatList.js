@@ -1,20 +1,19 @@
 import React, {useEffect, useState} from "react";
-import ChatListItem from "./ChatListItem/ChatListItem";
 import SortableList from "react-sortable-dnd-list";
-
-import './chat-list.scss';
-
-
-import socket from "../socket/socket";
+import ChatListItem from "./ChatListItem/ChatListItem";
 import AddChatBtn from "./AddChatBtn/AddChatBtn";
 import Contacts from "./Contacts/Contacts";
 import {useActiveChat} from "../activeChatContext/ActiveChatContext";
+import {ADD_ALERTED_CHAT} from "../store/types";
+
+import socket from "../socket/socket";
+import './chat-list.scss';
 
 
-export default function ChatList({ toggleChat, chats, setChats, alertedChats, addAlertChat }) {
+export default function ChatList({toggleChat, chats, setChats, alertedChats, addAlertChat}) {
   const [activeChat, setActiveChat] = useState(null);
   const [isContactsOpened, setIsContactsOpened] = useState(false);
-  const { changeIsActiveChat } = useActiveChat();
+  const {changeIsActiveChat} = useActiveChat();
 
   const toggleActiveChat = chatId => {
     changeIsActiveChat(true);
@@ -29,7 +28,7 @@ export default function ChatList({ toggleChat, chats, setChats, alertedChats, ad
   useEffect(() => {
     socket.on('CHAT_ALERT_MESSAGE', (chatName) => {
       addAlertChat({
-        type: 'ADD_ALERTED_CHAT',
+        type: ADD_ALERTED_CHAT,
         payload: chatName
       })
     })
@@ -47,12 +46,17 @@ export default function ChatList({ toggleChat, chats, setChats, alertedChats, ad
         {chats.length === 1 ?
             (<ChatListItem children={{...chats[0]}}
                            toggleActiveChat={toggleActiveChat}
-                           activeChat={activeChat} alertedChats={alertedChats}/>) :
+                           activeChat={activeChat}
+                           alertedChats={alertedChats}/>) :
             (<SortableList
                 itemComponent={ChatListItem}
                 value={chats}
                 onChange={setChats}
-                itemComponentProps={{toggleActiveChat, activeChat, alertedChats}}
+                itemComponentProps={{
+                  toggleActiveChat,
+                  activeChat,
+                  alertedChats
+                }}
             />)}
         <div className={'chat-list-box__footer'}>
           <div className={'chat-list-box__footer-wrapper'}>
