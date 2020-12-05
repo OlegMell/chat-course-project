@@ -86,10 +86,8 @@ io.on('connection', socket => {
       chat: chatName,
       message: cMessage
     });
-    console.log(chatName);
-    console.log(chatRoom);
     if (chatRoom !== chatName) {
-      console.log("if ---");
+      //TODO alert chats need fix
       socket.to(chatName).emit('CHAT_ALERT_MESSAGE', chatName);
     }
   });
