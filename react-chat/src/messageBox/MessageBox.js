@@ -4,7 +4,7 @@ import MessageInput from "./messageInput/MessageInput";
 
 import './message-box.scss';
 
-import socket from "../socket";
+import socket from "../socket/socket";
 import {useActiveChat} from "../activeChatContext/ActiveChatContext";
 
 export default function MessageBox({messages, chat, onAddMessage}) {

@@ -15,7 +15,7 @@ import {
 import 'react-splitter-layout/lib/index.css';
 import './chat.scss';
 
-import socket from "../socket";
+import socket from "../socket/socket";
 import reducer from "../store/reducer";
 
 

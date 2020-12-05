@@ -3,7 +3,7 @@ import React, {useState} from "react";
 import './contacts.scss';
 
 import {web} from "../../client_secret.json";
-import socket from "../../socket";
+import socket from "../../socket/socket";
 
 // console.log(web);
 

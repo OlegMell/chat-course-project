@@ -5,7 +5,7 @@ import SortableList from "react-sortable-dnd-list";
 import './chat-list.scss';
 
 
-import socket from "../socket";
+import socket from "../socket/socket";
 import AddChatBtn from "./AddChatBtn/AddChatBtn";
 import Contacts from "./Contacts/Contacts";
 import {useActiveChat} from "../activeChatContext/ActiveChatContext";

@@ -4,11 +4,11 @@ import {
   Switch,
   Route, Redirect
 } from 'react-router-dom';
-import PrivateRoute from "./PrivateRoute";
-import Chat from "./chat/Chat";
-import Auth from "./auth/Auth";
-import Alert from "./alert/Alert";
-import {AlertProvider} from "./alert/AlertContext";
+import PrivateRoute from "../routing/PrivateRoute";
+import Chat from "../chat/Chat";
+import Auth from "../auth/Auth";
+import Alert from "../alert/Alert";
+import {AlertProvider} from "../alert/AlertContext";
 
 
 export const AlertContext = React.createContext();
