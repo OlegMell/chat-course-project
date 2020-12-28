@@ -1,10 +1,10 @@
-import React, {useContext, useState} from "react";
+import React, {useState} from "react";
 import './chat-list-item.scss';
-import {useActiveChat} from "../../activeChatContext/ActiveChatContext";
+// import {useActiveChat} from "../../activeChatContext/ActiveChatContext";
 
 
 export default function ChatListItem({dragging, dragged, children, ...rest}) {
-  const [isActive, setIsActive] = useState(false);
+  // const [isActive, setIsActive] = useState(false);
   const {toggleActiveChat, activeChat, alertedChats} = rest;
 
 
