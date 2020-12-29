@@ -49,6 +49,7 @@ io.on('connection', socket => {
                         isModify = !isModify;
                     }
                 });
+
                 if (!isModify) {
                     users.push({[user.id]: socket});
                 }
@@ -116,13 +117,7 @@ io.on('connection', socket => {
         const addresseeUser = usersChats.get(addressee.email);
         if (addresseeUser.activeChat !== currentChat.id) {
             addresseeUser.socket.emit("CHAT_ALERT_MESSAGE", {chatName})
-            console.log("here");
         }
-
-        // if (chatRoom !== chatName) {
-        //     //TODO alert chats need fix
-        //     socket.to(chatName).emit('CHAT_ALERT_MESSAGE', chatName);
-        // }
     });
 
     socket.on("USERS:SEARCH", (data) => {

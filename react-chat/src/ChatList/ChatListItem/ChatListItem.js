@@ -8,6 +8,7 @@ export default function ChatListItem({dragging, dragged, children, ...rest}) {
 
     const {toggleActiveChat, activeChat, alertedChats} = rest;
     let res = '';
+    console.log(alertedChats);
     if (alertedChats.length > 0) {
         res = alertedChats.find(chat => chat === children.chat.name);
     }
@@ -16,7 +17,7 @@ export default function ChatListItem({dragging, dragged, children, ...rest}) {
         <div
             className={'list-item'}
             style={
-                children.chat.id === activeChat ?
+                children.chat.name === activeChat ?
                     {'backgroundColor': '#f77f00', ...rest.style} :
                     {'backgroundColor': '', ...rest.style}
             }

@@ -70,7 +70,6 @@ export default function Chat() {
     };
 
     const addAlertedChat = ({chatName}) => {
-        console.log(chatName);
         dispatch({
             type: ADD_ALERTED_CHAT,
             payload: chatName
@@ -99,6 +98,7 @@ export default function Chat() {
                     >
                         <ChatList toggleChat={setMessagesForActiveChat}
                                   chats={state.chats}
+                                  activeChat={state.activeChat}
                                   setChats={setChats}
                                   alertedChats={state.alertedChats}
                                   addAlertedChat={addAlertedChat}/>
