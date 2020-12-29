@@ -7,6 +7,7 @@ import ChatList from "../ChatList/ChatList";
 import MessageBox from "../messageBox/MessageBox";
 import {ActiveChatProvider} from "../activeChatContext/ActiveChatContext";
 import {
+    ADD_ALERTED_CHAT,
     NEW_MESSAGE, REMOVE_ALERTED_CHAT, SET_ACTIVE_CHAT,
     SET_CHATS,
     SET_MESSAGES_FOR_ACTIVE_CHAT
@@ -68,6 +69,14 @@ export default function Chat() {
         })
     };
 
+    const addAlertedChat = ({chatName}) => {
+        console.log(chatName);
+        dispatch({
+            type: ADD_ALERTED_CHAT,
+            payload: chatName
+        })
+    }
+
     return (
         <div className={'chat-box vh-100'}>
             <div className="nav nav-bar vh-10 header">
@@ -90,8 +99,9 @@ export default function Chat() {
                     >
                         <ChatList toggleChat={setMessagesForActiveChat}
                                   chats={state.chats}
-                                  setChats={setChats} alertedChats={state.alertedChats}
-                                  addAlertChat={dispatch}/>
+                                  setChats={setChats}
+                                  alertedChats={state.alertedChats}
+                                  addAlertedChat={addAlertedChat}/>
                         <MessageBox
                             messages={state.activeChatMessages[state.activeChat] || []}
                             chat={state.activeChat}

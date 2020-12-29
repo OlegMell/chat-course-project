@@ -6,11 +6,11 @@ class ChatService {
     this.model = Chat;
   }
 
-  readOne(id) {
+  findOneById(id) {
     return this.model.findByPk(id);
   }
 
-  readOneByName(name) {
+  findOneByName(name) {
     return this.model.findOne({
       where: {
         name,

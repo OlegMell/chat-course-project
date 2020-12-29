@@ -1,7 +1,7 @@
 const {server} = require('../config/server');
 const io = require('socket.io')(server);
 const AccountService = require('../services/AccountService');
-const GoogleDriveService = require('../services/GoogleDriveService');
+// const GoogleDriveService = require('../services/GoogleDriveService');
 const ChatService = require('../services/ChatService');
 const MessageService = require('../services/MessageService');
 const md5 = require('md5');
@@ -10,7 +10,6 @@ const md5 = require('md5');
 let activeChatId;
 let chatRoom;
 let users = [];
-let rooms = [];
 const usersChats = new Map();
 
 
@@ -27,16 +26,20 @@ io.on('connection', socket => {
                     socket.join(chat.name);
                 });
 
-                const userChat = {
-                    user: existingChats
+                if (!usersChats.has(user.email)) {
+                    usersChats.set(user.email, {
+                        existingChats,
+                        activeChat: null,
+                        alertedChats: [],
+                        socket
+                    })
+                } else {
+                    usersChats.get(user.email).socket = socket;
+                    usersChats.get(user.email).activeChat = null;
+                    usersChats.get(user.email).alertedChats = [];
                 }
 
-                if (!usersChats.has(user.email))
-                    usersChats.set(user.email, existingChats)
-
-                console.log(usersChats);
-
-                let image;
+                let image = '';
                 socket.emit('USER:SET_USER', {...user, image});
 
                 let isModify = false;
@@ -63,10 +66,12 @@ io.on('connection', socket => {
             });
     });
 
-    socket.on('CHAT:TOGGLE_ACTIVE', (chatId) => {
+    socket.on('CHAT:TOGGLE_ACTIVE', ({user, chatId}) => {
         activeChatId = chatId;
+        usersChats.get(user).activeChat = chatId;
+
         const chatService = new ChatService();
-        chatService.readOne(chatId)
+        chatService.findOneById(chatId)
             .then(async chat => {
                 const messages = await chat.getMessages({include: 'from'});
                 chatRoom = chat.name;
@@ -84,8 +89,18 @@ io.on('connection', socket => {
         });
 
         const chatService = new ChatService();
-        const currentChat = await chatService.readOneByName(chatName);
+        const currentChat = await chatService.findOneByName(chatName);
         await currentChat.addMessage(_message);
+
+        const currentChatUsers = await currentChat.getAccounts();
+        const addressee = currentChatUsers.find(user => user.email !== from);
+
+        if (usersChats.has(addressee.email)) {
+            const userChats = usersChats.get(addressee.email);
+            if (userChats.activeChat !== currentChat.id) {
+                userChats.alertedChats.push(chatName)
+            }
+        }
 
         const accountService = new AccountService();
         const sender = await accountService.findOne({email: from});
@@ -97,10 +112,17 @@ io.on('connection', socket => {
             chat: chatName,
             message: cMessage
         });
-        if (chatRoom !== chatName) {
-            //TODO alert chats need fix
-            socket.to(chatName).emit('CHAT_ALERT_MESSAGE', chatName);
+
+        const addresseeUser = usersChats.get(addressee.email);
+        if (addresseeUser.activeChat !== currentChat.id) {
+            addresseeUser.socket.emit("CHAT_ALERT_MESSAGE", {chatName})
+            console.log("here");
         }
+
+        // if (chatRoom !== chatName) {
+        //     //TODO alert chats need fix
+        //     socket.to(chatName).emit('CHAT_ALERT_MESSAGE', chatName);
+        // }
     });
 
     socket.on("USERS:SEARCH", (data) => {
@@ -114,12 +136,13 @@ io.on('connection', socket => {
         const chatService = new ChatService();
         const accountService = new AccountService();
         const chatName = `${email} + ${userId}`;
-        chatService.readOneByName(md5(chatName)).then(chat => {
+        chatService.findOneByName(md5(chatName)).then(chat => {
             if (!chat) {
                 chatService.create(md5(chatName)).then(async chat => {
                     if (!chat) {
                         socket.emit("CHAT:ERROR_CREATE_CHAT");
                     }
+
                     const currentUser = await accountService.findOne({email});
                     const addresseeUser = await accountService.readOne(userId);
 

@@ -4,13 +4,13 @@ import ChatListItem from "./ChatListItem/ChatListItem";
 import AddChatBtn from "./AddChatBtn/AddChatBtn";
 import Contacts from "./Contacts/Contacts";
 import {useActiveChat} from "../activeChatContext/ActiveChatContext";
-import {ADD_ALERTED_CHAT} from "../store/types";
 
+import {ADD_ALERTED_CHAT} from "../store/types";
 import socket from "../socket/socket";
 import './chat-list.scss';
 
 
-export default function ChatList({toggleChat, chats, setChats, alertedChats, addAlertChat}) {
+export default function ChatList({toggleChat, chats, setChats, alertedChats, addAlertedChat}) {
     const [activeChat, setActiveChat] = useState(null);
     const [isContactsOpened, setIsContactsOpened] = useState(false);
     const {changeIsActiveChat} = useActiveChat();
@@ -18,28 +18,23 @@ export default function ChatList({toggleChat, chats, setChats, alertedChats, add
     const toggleActiveChat = chatId => {
         changeIsActiveChat(true);
         setActiveChat(chatId);
-        socket.emit('CHAT:TOGGLE_ACTIVE', chatId);
+        const user = localStorage.getItem("user-email");
+        socket.emit('CHAT:TOGGLE_ACTIVE', {user, chatId});
     };
 
     useEffect(() => {
         socket.on('CHAT:TOGGLE_MESSAGES', toggleChat);
-    }, [toggleChat]);
+    }, []);
 
     useEffect(() => {
-        socket.on('CHAT_ALERT_MESSAGE', (chatName) => {
-            addAlertChat({
-                type: ADD_ALERTED_CHAT,
-                payload: chatName
-            })
-        })
-    }, [addAlertChat]);
+        socket.on('CHAT_ALERT_MESSAGE', addAlertedChat);
+    }, []);
 
     const addChatBtnClickHandler = () => {
         setIsContactsOpened((isContactsOpened) => {
             return !isContactsOpened;
         });
     };
-
 
     return (
         <div className={'chat-list-box pt-2'}>
