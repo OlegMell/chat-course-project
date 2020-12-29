@@ -7,6 +7,7 @@ import ChatList from "../ChatList/ChatList";
 import MessageBox from "../messageBox/MessageBox";
 import {ActiveChatProvider} from "../activeChatContext/ActiveChatContext";
 import {
+    SET_DATA,
     ADD_ALERTED_CHAT,
     NEW_MESSAGE, REMOVE_ALERTED_CHAT, SET_ACTIVE_CHAT,
     SET_CHATS,
@@ -17,29 +18,23 @@ import reducer from "../store/reducer";
 
 import 'react-splitter-layout/lib/index.css';
 import './chat.scss';
+import {initialState} from "../store/initialState";
 
 
 export default function Chat() {
-    const [chats, setChats] = useState([]);
-    const [user, setUser] = useState({});
-    const [state, dispatch] = useReducer(reducer, {
-        chats: [],
-        activeChat: '',
-        activeChatMessages: {},
-        alertedChats: []
-    });
-
     window.socket = socket;
 
+    const [chats, setChats] = useState([]);
+    const [state, dispatch] = useReducer(reducer, initialState);
+
     useEffect(() => {
-        socket.emit('USER:AUTHORIZE', {email: localStorage.getItem("user-email")});
-        socket.on("USER:SET_USER", user => setUser(user));
-        socket.on('USER:SET_CHATS', chats => {
+        socket.emit('USER:AUTHORIZE', {email: localStorage.getItem('user-email')});
+        socket.on('APP:SET_INIT_STATE', data => {
             dispatch({
-                type: SET_CHATS,
-                payload: chats
+                type: SET_DATA,
+                payload: data
             })
-        });
+        })
     }, []);
 
     const addMessage = ({chat, message}) => {
@@ -81,9 +76,8 @@ export default function Chat() {
             <div className="nav nav-bar vh-10 header">
                 <div className="title">Messages</div>
                 <div className={'search-user-wrapper'}>
-                    {state.activeChat}
                     <SearchBar/>
-                    {!user.dataValues || (<User photo={user.dataValues.image}/>)}
+                    {!state.user || (<User photo={state.user.image}/>)}
                 </div>
             </div>
             <div className="m-0">

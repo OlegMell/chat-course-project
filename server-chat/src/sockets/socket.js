@@ -14,6 +14,7 @@ const usersChats = new Map();
 
 
 io.on('connection', socket => {
+
     socket.on('USER:AUTHORIZE', (userData) => {
         const accountService = new AccountService();
         accountService.findOne(userData)
@@ -29,18 +30,19 @@ io.on('connection', socket => {
                 if (!usersChats.has(user.email)) {
                     usersChats.set(user.email, {
                         existingChats,
-                        activeChat: null,
+                        activeChat: '',
                         alertedChats: [],
+                        activeChatMessages: {},
+                        chats: [],
                         socket
                     })
                 } else {
                     usersChats.get(user.email).socket = socket;
                     usersChats.get(user.email).activeChat = null;
                     usersChats.get(user.email).alertedChats = [];
+                    usersChats.get(user.email).chats = [];
+                    usersChats.get(user.email).activeChatMessages = {};
                 }
-
-                let image = '';
-                socket.emit('USER:SET_USER', {...user, image});
 
                 let isModify = false;
                 users.forEach(item => {
@@ -63,7 +65,11 @@ io.on('connection', socket => {
                     chats.push({chat, addressee});
                 }
 
-                socket.emit('USER:SET_CHATS', chats);
+                usersChats.get(user.email).chats = chats;
+
+                const state = {...usersChats.get(user.email), socket: null, user: user.dataValues};
+
+                socket.emit('APP:SET_INIT_STATE', state)
             });
     });
 
