@@ -8,19 +8,18 @@ import './message-box.scss';
 
 
 export default function MessageBox({messages, chat, onAddMessage, draftMessages, dispatch}) {
-    const [inputText, setInputText] = useState('');
-    const [rawInputText, setRawInputText] = useState('');
+    // const [inputText, setInputText] = useState('');
     const messagesRef = useRef();
     const {isActiveChat} = useActiveChat();
 
-    function sendBtnClickHandler() {
-        socket.emit("SEND_MESSAGE", {
-            content: inputText,
-            chatName: chat,
-            from: localStorage.getItem("user-email")
-        });
-        setInputText("");
-    }
+    // function sendBtnClickHandler() {
+    //     socket.emit("SEND_MESSAGE", {
+    //         content: inputText,
+    //         chatName: chat,
+    //         from: localStorage.getItem("user-email")
+    //     });
+    //     setInputText("");
+    // }
 
     useEffect(() => {
         socket.on('CHAT:ON_MESSAGE', onAddMessage);
@@ -37,9 +36,9 @@ export default function MessageBox({messages, chat, onAddMessage, draftMessages,
             </main>
             {isActiveChat ? (<footer className={'message-box-footer'}>
                 <MessageInput
-                    text={inputText}
-                    setText={setInputText}
-                    draftMessages={draftMessages}
+                    // text={inputText}
+                    // setText={setInputText}
+                    draftMessages={draftMessages || []}
                     chat={chat}
                     dispatch={dispatch}
                 />

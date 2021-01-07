@@ -8,7 +8,6 @@ export default function ChatListItem({dragging, dragged, children, ...rest}) {
 
     const {toggleActiveChat, activeChat, alertedChats} = rest;
     let res = '';
-    console.log(alertedChats);
     if (alertedChats.length > 0) {
         res = alertedChats.find(chat => chat === children.chat.name);
     }

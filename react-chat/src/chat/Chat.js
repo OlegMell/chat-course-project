@@ -14,17 +14,15 @@ import {
     SET_MESSAGES_FOR_ACTIVE_CHAT
 } from "../store/types";
 import socket from "../socket/socket";
+import {initialState} from "../store/initialState";
 import reducer from "../store/reducer";
 
 import 'react-splitter-layout/lib/index.css';
 import './chat.scss';
-import {initialState} from "../store/initialState";
-
 
 export default function Chat() {
     window.socket = socket;
 
-    const [chats, setChats] = useState([]);
     const [state, dispatch] = useReducer(reducer, initialState);
 
     useEffect(() => {
@@ -43,6 +41,13 @@ export default function Chat() {
             payload: {chat, message}
         });
     };
+
+    const setChatOrder = (chats) => {
+        dispatch({
+            type: SET_CHATS,
+            payload: chats
+        });
+    }
 
     const setMessagesForActiveChat = ({messages, chatRoom}) => {
         dispatch({
@@ -93,14 +98,14 @@ export default function Chat() {
                         <ChatList toggleChat={setMessagesForActiveChat}
                                   chats={state.chats}
                                   activeChat={state.activeChat}
-                                  setChats={setChats}
+                                  setChats={setChatOrder}
                                   alertedChats={state.alertedChats}
                                   addAlertedChat={addAlertedChat}
                         />
                         <MessageBox
                             messages={state.activeChatMessages[state.activeChat] || []}
                             chat={state.activeChat}
-                            draftMessages={state.draftMessages}
+                            draftMessages={state.draftMessages || []}
                             onAddMessage={addMessage}
                             dispatch={dispatch}
                         />

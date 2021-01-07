@@ -1,27 +1,27 @@
-import React, {useRef, useState} from "react";
+import React, {useReducer, useRef, useState} from "react";
 import Picker from "emoji-picker-react";
 import SpeechInput from "./SpeechInput/SpeechInput";
 import SpeechRecognition, {useSpeechRecognition} from 'react-speech-recognition';
 
 import {ADD_DRAFT_MESSAGE} from '../../store/types';
-import './message-inp.scss';
 import socket from "../../socket/socket";
+import './message-inp.scss';
+
 
 export default function MessageInput({text, setText, setRawText, draftMessages, chat, dispatch}) {
     // const {transcript, resetTranscript} = useSpeechRecognition();
 
     // const [isSpeechClicked, setIsSpeechClicked] = useState(false);
 
-    const draftMessage = draftMessages.find(draft => draft.chat === chat) || '';
 
-    const [tmpText, setTmpText] = useState(draftMessage);
+    const [tmpText, setTmpText] = useState(draftMessages.find(draft => draft.chat === chat) || '');
+
 
     const [isEmojiBtnClicked, setIsEmojiBtnClicked] = useState('');
 
     const [cursorPos, setCursorPos] = useState(0);
 
     const inpRef = useRef(null);
-
 
     const onEmojiClick = (event, emojiObject) => {
         const textArray = tmpText.split('');
@@ -64,6 +64,11 @@ export default function MessageInput({text, setText, setRawText, draftMessages, 
                               chat,
                               tmpText
                           })
+                          socket.emit("CHAT:DRAFT_MESSAGE", {
+                              userEmail: localStorage.getItem("user-email"),
+                              draftMessage: inpRef.current.value,
+                              chat
+                          })
                       }}
                       onFocus={() => setCursorPos(inpRef.current.selectionStart)}
                       className={'message-input-box__inp'}
@@ -78,6 +83,7 @@ export default function MessageInput({text, setText, setRawText, draftMessages, 
                         chatName: chat,
                         from: localStorage.getItem("user-email")
                     });
+                    setTmpText('')
                 }}
             >Send
             </button>

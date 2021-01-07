@@ -33,7 +33,8 @@ io.on('connection', socket => {
                         alertedChats: [],
                         activeChatMessages: {},
                         chats: [],
-                        socket
+                        draftMessages: [],
+                        socket,
                     })
                 } else {
                     usersChats.get(user.email).socket = socket;
@@ -41,7 +42,9 @@ io.on('connection', socket => {
                     usersChats.get(user.email).alertedChats = [];
                     usersChats.get(user.email).chats = [];
                     usersChats.get(user.email).activeChatMessages = {};
+                    // usersChats.get(user.email).draftMessages = []
                 }
+
 
                 let isModify = false;
                 users.forEach(item => {
@@ -87,7 +90,6 @@ io.on('connection', socket => {
     });
 
     socket.on('SEND_MESSAGE', async ({content, chatName, from}) => {
-        console.log(content);
         const messageService = new MessageService();
         const _message = await messageService.create({
             content,
@@ -123,6 +125,21 @@ io.on('connection', socket => {
         const addresseeUser = usersChats.get(addressee.email);
         if (addresseeUser.activeChat !== currentChat.id) {
             addresseeUser.socket.emit("CHAT_ALERT_MESSAGE", {chatName})
+        }
+    });
+
+    socket.on("CHAT:DRAFT_MESSAGE", ({userEmail, draftMessage, chat}) => {
+        if (usersChats.has(userEmail)) {
+            const draft = usersChats.get(userEmail).draftMessages.find(draft => draft.chat === chat);
+            if (draft) {
+                draft.draftMessage = draftMessage;
+            } else {
+                const draft = {
+                    chat,
+                    draftMessage
+                };
+                usersChats.get(userEmail).draftMessages.push(draft);
+            }
         }
     });
 
