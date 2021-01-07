@@ -14,7 +14,6 @@ const usersChats = new Map();
 
 
 io.on('connection', socket => {
-
     socket.on('USER:AUTHORIZE', (userData) => {
         const accountService = new AccountService();
         accountService.findOne(userData)
@@ -88,6 +87,7 @@ io.on('connection', socket => {
     });
 
     socket.on('SEND_MESSAGE', async ({content, chatName, from}) => {
+        console.log(content);
         const messageService = new MessageService();
         const _message = await messageService.create({
             content,

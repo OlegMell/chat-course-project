@@ -58,6 +58,15 @@ export default (state, action) => {
         ]
       };
 
+    case types.ADD_DRAFT_MESSAGE:
+      return {
+        ...state,
+        draftMessages: [
+            ...state.draftMessages,
+            ...action.payload
+        ]
+      }
+
     default:
       return state;
   }

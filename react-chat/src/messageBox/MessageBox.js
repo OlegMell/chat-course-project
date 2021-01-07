@@ -1,16 +1,17 @@
 import React, {useEffect, useRef, useState} from "react";
 import Message from "./message/Message";
 import MessageInput from "./messageInput/MessageInput";
-import socket from "../socket/socket";
 import {useActiveChat} from "../activeChatContext/ActiveChatContext";
+
+import socket from "../socket/socket";
 import './message-box.scss';
 
 
-export default function MessageBox({messages, chat, onAddMessage}) {
+export default function MessageBox({messages, chat, onAddMessage, draftMessages, dispatch}) {
     const [inputText, setInputText] = useState('');
+    const [rawInputText, setRawInputText] = useState('');
     const messagesRef = useRef();
     const {isActiveChat} = useActiveChat();
-
 
     function sendBtnClickHandler() {
         socket.emit("SEND_MESSAGE", {
@@ -29,7 +30,6 @@ export default function MessageBox({messages, chat, onAddMessage}) {
         messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
     });
 
-
     return (
         <div className={'message-box'}>
             <main ref={messagesRef} className={'message-box-messages'}>
@@ -39,12 +39,10 @@ export default function MessageBox({messages, chat, onAddMessage}) {
                 <MessageInput
                     text={inputText}
                     setText={setInputText}
+                    draftMessages={draftMessages}
+                    chat={chat}
+                    dispatch={dispatch}
                 />
-                <button
-                    className={'sendBtn btn btn-success'}
-                    onClick={sendBtnClickHandler}
-                >Send
-                </button>
             </footer>) : ''}
         </div>
     )

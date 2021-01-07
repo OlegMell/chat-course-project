@@ -95,11 +95,15 @@ export default function Chat() {
                                   activeChat={state.activeChat}
                                   setChats={setChats}
                                   alertedChats={state.alertedChats}
-                                  addAlertedChat={addAlertedChat}/>
+                                  addAlertedChat={addAlertedChat}
+                        />
                         <MessageBox
                             messages={state.activeChatMessages[state.activeChat] || []}
                             chat={state.activeChat}
-                            onAddMessage={addMessage}/>
+                            draftMessages={state.draftMessages}
+                            onAddMessage={addMessage}
+                            dispatch={dispatch}
+                        />
                     </SplitterLayout>
                 </ActiveChatProvider>
                 {/*</MessagesProvider>*/}

@@ -3,33 +3,42 @@ import Picker from "emoji-picker-react";
 import SpeechInput from "./SpeechInput/SpeechInput";
 import SpeechRecognition, {useSpeechRecognition} from 'react-speech-recognition';
 
+import {ADD_DRAFT_MESSAGE} from '../../store/types';
 import './message-inp.scss';
+import socket from "../../socket/socket";
 
+export default function MessageInput({text, setText, setRawText, draftMessages, chat, dispatch}) {
+    // const {transcript, resetTranscript} = useSpeechRecognition();
 
-export default function MessageInput({text, setText}) {
-    const {transcript, resetTranscript} = useSpeechRecognition();
-    const [isSpeechClicked, setIsSpeechClicked] = useState(false);
+    // const [isSpeechClicked, setIsSpeechClicked] = useState(false);
+
+    const draftMessage = draftMessages.find(draft => draft.chat === chat) || '';
+
+    const [tmpText, setTmpText] = useState(draftMessage);
 
     const [isEmojiBtnClicked, setIsEmojiBtnClicked] = useState('');
+
     const [cursorPos, setCursorPos] = useState(0);
+
     const inpRef = useRef(null);
 
+
     const onEmojiClick = (event, emojiObject) => {
-        const textArray = text.split('');
-        textArray.splice(cursorPos, 0, emojiObject.emoji);
-        setText(textArray.join(''));
-        setCursorPos(() => cursorPos + 2);
+        const textArray = tmpText.split('');
+        textArray.splice(cursorPos, 0, String.fromCodePoint(parseInt(emojiObject.unified, 16)));
+        setTmpText(textArray.join(''));
+        setCursorPos((cursorPos) => cursorPos += 2);
     };
 
-    const onSpeechClicked = () => {
-        SpeechRecognition.startListening();
-        // setIsSpeechClicked(!isSpeechClicked);
-    };
+    // const onSpeechClicked = () => {
+    //     SpeechRecognition.startListening();
+    //     // setIsSpeechClicked(!isSpeechClicked);
+    // };
 
     return (
         <div className={'message-input-box'}>
-            <SpeechInput h={onSpeechClicked} speech={SpeechRecognition}
-                         st={setText}/>
+            {/*<SpeechInput h={onSpeechClicked} speech={SpeechRecognition}*/}
+            {/*             st={setText}/>*/}
             <button onClick={() => setIsEmojiBtnClicked(!isEmojiBtnClicked)}
                     className={'message-box-footer__emoji-btn'}>
                 <svg width="1em" height="1em" viewBox="0 0 16 16"
@@ -46,17 +55,32 @@ export default function MessageInput({text, setText}) {
             {!isEmojiBtnClicked || (
                 <Picker onEmojiClick={onEmojiClick}/>
             )}
-            {transcript}
+            {/*{transcript}*/}
             <textarea ref={inpRef}
-                      value={text}
+                      value={tmpText}
                       onChange={(e) => {
-                          setText(inpRef.current.value)
+                          setTmpText(inpRef.current.value)
+                          dispatch(ADD_DRAFT_MESSAGE, {
+                              chat,
+                              tmpText
+                          })
                       }}
                       onFocus={() => setCursorPos(inpRef.current.selectionStart)}
                       className={'message-input-box__inp'}
                       placeholder={'Type message...'}
                       onKeyUp={() => setCursorPos(inpRef.current.selectionStart)}
             />
+            <button
+                className={'sendBtn btn btn-success'}
+                onClick={() => {
+                    socket.emit("SEND_MESSAGE", {
+                        content: tmpText,
+                        chatName: chat,
+                        from: localStorage.getItem("user-email")
+                    });
+                }}
+            >Send
+            </button>
         </div>
     )
 }

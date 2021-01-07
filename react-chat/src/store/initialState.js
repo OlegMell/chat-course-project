@@ -3,5 +3,6 @@ export const initialState = {
     chats: [],
     activeChat: '',
     activeChatMessages: {},
-    alertedChats: []
+    alertedChats: [],
+    draftMessages: []
 }

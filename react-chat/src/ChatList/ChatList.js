@@ -10,14 +10,19 @@ import socket from "../socket/socket";
 import './chat-list.scss';
 
 
-export default function ChatList({toggleChat, chats, activeChat ,setChats, alertedChats, addAlertedChat}) {
-    // const [activeChat, setActiveChat] = useState(null);
+export default function ChatList({
+                                     toggleChat,
+                                     chats,
+                                     activeChat,
+                                     setChats,
+                                     alertedChats,
+                                     addAlertedChat
+                                 }) {
     const [isContactsOpened, setIsContactsOpened] = useState(false);
     const {changeIsActiveChat} = useActiveChat();
 
     const toggleActiveChat = chatId => {
         changeIsActiveChat(true);
-        // setActiveChat(chatId);
         const user = localStorage.getItem("user-email");
         socket.emit('CHAT:TOGGLE_ACTIVE', {user, chatId});
     };
