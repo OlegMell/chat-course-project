@@ -28,10 +28,12 @@ export default function ChatList({
 
     useEffect(() => {
         socket.on('CHAT:TOGGLE_MESSAGES', toggleChat);
+        //eslint-disable-next-line
     }, []);
 
     useEffect(() => {
         socket.on('CHAT_ALERT_MESSAGE', addAlertedChat);
+        //eslint-disable-next-line
     }, []);
 
     const addChatBtnClickHandler = () => {

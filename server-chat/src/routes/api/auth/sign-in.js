@@ -1,5 +1,5 @@
 const signUpRoute = require('express').Router();
-const SignInController = require('../../../controllers/SignInController');
+const SignInController = require('../../../controllers/auth/SignInController');
 
 signUpRoute.put('/', SignInController.signIn);
 

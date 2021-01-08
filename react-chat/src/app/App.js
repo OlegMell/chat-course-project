@@ -9,6 +9,7 @@ import Chat from "../chat/Chat";
 import Auth from "../auth/Auth";
 import Alert from "../alert/Alert";
 import { AlertProvider } from "../alert/AlertContext";
+import {StateReducer} from "../store/StateReducer";
 
 
 // export const AlertContext = React.createContext();
@@ -24,7 +25,9 @@ function App() {
                             <Auth/>
                         </Route>
                         <PrivateRoute path='/chat'>
-                            <Chat/>
+                            <StateReducer>
+                                <Chat/>
+                            </StateReducer>
                         </PrivateRoute>
                         <Route path='/'>
                             <Redirect to='/chat'/>

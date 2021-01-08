@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const md5 = require('md5');
-const AccountService = require('../services/AccountService');
+const AccountService = require('../../services/AccountService');
 
 class SignUpController {
   static async signUp(req, res) {

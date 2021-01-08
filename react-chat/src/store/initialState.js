@@ -4,5 +4,6 @@ export const initialState = {
     activeChat: '',
     activeChatMessages: {},
     alertedChats: [],
-    draftMessages: []
+    draftMessages: [],
+    loading: false
 }

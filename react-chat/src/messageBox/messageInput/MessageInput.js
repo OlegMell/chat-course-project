@@ -8,29 +8,26 @@ import socket from "../../socket/socket";
 import './message-inp.scss';
 
 
-export default function MessageInput({text, setText, setRawText, draftMessages, chat, dispatch}) {
+export default function MessageInput({text, setText, setRawText, draftMessages, chat, addDraftMessage}) {
     // const {transcript, resetTranscript} = useSpeechRecognition();
 
     // const [isSpeechClicked, setIsSpeechClicked] = useState(false);
 
-    const [tmpText, setTmpText] = useState('');
+    const draft = draftMessages.find(draft => draft.chat === chat) || {};
 
-    useEffect(() => {
-        const draft = draftMessages.find(draft => draft.chat === chat);
-        if (draft) {
-            setTmpText(draft.draftMessage);
-        }
-    }, [])
+    const [tmpText, setTmpText] = useState(draft.draftMessage);
 
-    console.log(draftMessages);
-
-    console.log("MESSAGE_IPUT");
+    // console.log(draftMessages);
+    //
+    // console.log("MESSAGE_IPUT");
 
     const [isEmojiBtnClicked, setIsEmojiBtnClicked] = useState('');
 
     const [cursorPos, setCursorPos] = useState(0);
 
     const inpRef = useRef(null);
+
+    console.log(draftMessages);
 
 
     const onEmojiClick = (event, emojiObject) => {
@@ -70,10 +67,7 @@ export default function MessageInput({text, setText, setRawText, draftMessages, 
                       value={tmpText}
                       onChange={(e) => {
                           setTmpText(inpRef.current.value)
-                          dispatch(ADD_DRAFT_MESSAGE, {
-                              chat,
-                              tmpText
-                          })
+                          addDraftMessage(chat, tmpText);
                           socket.emit("CHAT:DRAFT_MESSAGE", {
                               userEmail: localStorage.getItem("user-email"),
                               draftMessage: inpRef.current.value,

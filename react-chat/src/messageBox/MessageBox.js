@@ -7,7 +7,7 @@ import socket from "../socket/socket";
 import './message-box.scss';
 
 
-export default function MessageBox({messages, chat, onAddMessage, draftMessages, dispatch}) {
+export default function MessageBox({messages, chat, onAddMessage, draftMessages, addDraftMessage}) {
     // const [inputText, setInputText] = useState('');
     const messagesRef = useRef();
     const {isActiveChat} = useActiveChat();
@@ -25,6 +25,7 @@ export default function MessageBox({messages, chat, onAddMessage, draftMessages,
 
     useEffect(() => {
         socket.on('CHAT:ON_MESSAGE', onAddMessage);
+        //eslint-disable-next-line
     }, []);
 
     useEffect(() => {
@@ -42,7 +43,7 @@ export default function MessageBox({messages, chat, onAddMessage, draftMessages,
                     // setText={setInputText}
                     draftMessages={draftMessages || []}
                     chat={chat}
-                    dispatch={dispatch}
+                    addDraftMessage={addDraftMessage}
                 />
             </footer>) : ''}
         </div>

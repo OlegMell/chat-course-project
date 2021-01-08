@@ -13,3 +13,7 @@ export const ADD_ALERTED_CHAT = 'ADD_ALERTED_CHAT';
 export const REMOVE_ALERTED_CHAT = 'REMOVE_ALERTED_CHAT';
 
 export const ADD_DRAFT_MESSAGE = 'ADD_DRAFT_MESSAGE'
+
+export const SHOW_LOADER= 'SHOW_LOADER'
+
+export const SET_I_DATA = 'SET_I_DATA'
