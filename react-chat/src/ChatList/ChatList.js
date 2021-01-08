@@ -5,7 +5,6 @@ import AddChatBtn from "./AddChatBtn/AddChatBtn";
 import Contacts from "./Contacts/Contacts";
 import {useActiveChat} from "../activeChatContext/ActiveChatContext";
 
-import {ADD_ALERTED_CHAT} from "../store/types";
 import socket from "../socket/socket";
 import './chat-list.scss';
 
@@ -36,9 +35,7 @@ export default function ChatList({
     }, []);
 
     const addChatBtnClickHandler = () => {
-        setIsContactsOpened((isContactsOpened) => {
-            return !isContactsOpened;
-        });
+        setIsContactsOpened(prevIsContactsOpened => !prevIsContactsOpened);
     };
 
     return (

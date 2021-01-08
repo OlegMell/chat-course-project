@@ -1,4 +1,4 @@
-import React, {useReducer, useRef, useState} from "react";
+import React, {useEffect, useReducer, useRef, useState} from "react";
 import Picker from "emoji-picker-react";
 import SpeechInput from "./SpeechInput/SpeechInput";
 import SpeechRecognition, {useSpeechRecognition} from 'react-speech-recognition';
@@ -13,15 +13,25 @@ export default function MessageInput({text, setText, setRawText, draftMessages, 
 
     // const [isSpeechClicked, setIsSpeechClicked] = useState(false);
 
+    const [tmpText, setTmpText] = useState('');
 
-    const [tmpText, setTmpText] = useState(draftMessages.find(draft => draft.chat === chat) || '');
+    useEffect(() => {
+        const draft = draftMessages.find(draft => draft.chat === chat);
+        if (draft) {
+            setTmpText(draft.draftMessage);
+        }
+    }, [])
 
+    console.log(draftMessages);
+
+    console.log("MESSAGE_IPUT");
 
     const [isEmojiBtnClicked, setIsEmojiBtnClicked] = useState('');
 
     const [cursorPos, setCursorPos] = useState(0);
 
     const inpRef = useRef(null);
+
 
     const onEmojiClick = (event, emojiObject) => {
         const textArray = tmpText.split('');

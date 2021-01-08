@@ -25,6 +25,8 @@ export default function Chat() {
 
     const [state, dispatch] = useReducer(reducer, initialState);
 
+    console.log("CHAT")
+
     useEffect(() => {
         socket.emit('USER:AUTHORIZE', {email: localStorage.getItem('user-email')});
         socket.on('APP:SET_INIT_STATE', data => {

@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useEffect, useRef} from "react";
 import Message from "./message/Message";
 import MessageInput from "./messageInput/MessageInput";
 import {useActiveChat} from "../activeChatContext/ActiveChatContext";
@@ -11,6 +11,8 @@ export default function MessageBox({messages, chat, onAddMessage, draftMessages,
     // const [inputText, setInputText] = useState('');
     const messagesRef = useRef();
     const {isActiveChat} = useActiveChat();
+
+    console.log("MESSAGE_BOX");
 
     // function sendBtnClickHandler() {
     //     socket.emit("SEND_MESSAGE", {
