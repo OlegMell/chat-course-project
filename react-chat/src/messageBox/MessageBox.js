@@ -5,6 +5,7 @@ import {useActiveChat} from "../activeChatContext/ActiveChatContext";
 
 import socket from "../socket/socket";
 import './message-box.scss';
+import {Loader} from "../Loader";
 
 
 export default function MessageBox({messages, chat, onAddMessage, draftMessages, addDraftMessage}) {
@@ -23,20 +24,21 @@ export default function MessageBox({messages, chat, onAddMessage, draftMessages,
     // }
 
 
-
     useEffect(() => {
         messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
     });
 
+    const mapMessages = () => {
+        return messages.map(msg => (<Message key={msg.id} msg={msg}/>))
+    }
+
     return (
         <div className={'message-box'}>
             <main ref={messagesRef} className={'message-box-messages'}>
-                {messages.map(msg => (<Message key={msg.id} msg={msg}/>))}
+                {!isActiveChat ? <h5 className={'tooltip-text'}>Select a chat to start messaging</h5> : mapMessages()}
             </main>
             {isActiveChat ? (<footer className={'message-box-footer'}>
                 <MessageInput
-                    // text={inputText}
-                    // setText={setInputText}
                     draftMessages={draftMessages || []}
                     chat={chat}
                     addDraftMessage={addDraftMessage}

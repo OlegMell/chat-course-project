@@ -8,7 +8,7 @@ import socket from "../../socket/socket";
 import './message-inp.scss';
 
 
-export default function MessageInput({text, setText, setRawText, draftMessages, chat, addDraftMessage}) {
+export default function MessageInput({draftMessages, chat, addDraftMessage}) {
     // const {transcript, resetTranscript} = useSpeechRecognition();
 
     // const [isSpeechClicked, setIsSpeechClicked] = useState(false);
