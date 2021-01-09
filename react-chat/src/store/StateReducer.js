@@ -51,7 +51,7 @@ export const StateReducer = ({children}) => {
         });
     }
 
-    const addMessage = async ({chat, message}) => {
+    const addMessage = ({chat, message}) => {
         console.log(message);
         dispatch({
             type: NEW_MESSAGE,

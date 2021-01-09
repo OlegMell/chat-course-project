@@ -22,11 +22,7 @@ export default function MessageBox({messages, chat, onAddMessage, draftMessages,
     //     setInputText("");
     // }
 
-    useEffect(() => {
-        console.log("EFFECT");
-        socket.on('CHAT:ON_MESSAGE', onAddMessage);
-        //eslint-disable-next-line
-    }, []);
+
 
     useEffect(() => {
         messagesRef.current.scrollTop = messagesRef.current.scrollHeight;

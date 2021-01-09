@@ -6,15 +6,15 @@ import SearchBar from "../searchBar/SearchBar";
 import ChatList from "../ChatList/ChatList";
 import MessageBox from "../messageBox/MessageBox";
 import {ActiveChatProvider} from "../activeChatContext/ActiveChatContext";
+import {Loader} from "../Loader";
+import {StateContext} from "../store/StateContext";
+
 import socket from "../socket/socket";
 
 import 'react-splitter-layout/lib/index.css';
 import './chat.scss';
-import {StateContext} from "../store/StateContext";
-import {Loader} from "../Loader";
 
 export default function Chat() {
-    // window.socket = socket;
     const {
         reload,
         activeChatMessages,
@@ -31,13 +31,17 @@ export default function Chat() {
         loading
     } = useContext(StateContext);
 
-    console.log("chat");
-
     useEffect(() => {
-        console.log("RELOAD");
         reload();
         //eslint-disable-next-line
     }, [])
+
+    useEffect(() => {
+        socket.on('CHAT:ON_MESSAGE', addMessage);
+        socket.on('CHAT:TOGGLE_MESSAGES', setMessagesForActiveChat);
+        socket.on('CHAT_ALERT_MESSAGE', addAlertedChat);
+        //eslint-disable-next-line
+    }, []);
 
     return (
         <>

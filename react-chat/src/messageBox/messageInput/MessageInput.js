@@ -1,4 +1,4 @@
-import React, {useEffect, useReducer, useRef, useState} from "react";
+import React, {useRef, useState} from "react";
 import Picker from "emoji-picker-react";
 import SpeechInput from "./SpeechInput/SpeechInput";
 import SpeechRecognition, {useSpeechRecognition} from 'react-speech-recognition';
@@ -15,20 +15,13 @@ export default function MessageInput({text, setText, setRawText, draftMessages, 
 
     const draft = draftMessages.find(draft => draft.chat === chat) || {};
 
-    const [tmpText, setTmpText] = useState('');
-
-    // console.log(draftMessages);
-    //
-    // console.log("MESSAGE_IPUT");
+    const [tmpText, setTmpText] = useState(draft.draftMessage);
 
     const [isEmojiBtnClicked, setIsEmojiBtnClicked] = useState('');
 
     const [cursorPos, setCursorPos] = useState(0);
 
     const inpRef = useRef(null);
-
-    // console.log(draftMessages);
-
 
     const onEmojiClick = (event, emojiObject) => {
         const textArray = tmpText.split('');
@@ -87,7 +80,7 @@ export default function MessageInput({text, setText, setRawText, draftMessages, 
                         chatName: chat,
                         from: localStorage.getItem("user-email")
                     });
-                    // setTmpText('')
+                    setTmpText('')
                 }}
             >Send
             </button>

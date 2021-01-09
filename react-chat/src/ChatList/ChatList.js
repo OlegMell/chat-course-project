@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import SortableList from "react-sortable-dnd-list";
 import ChatListItem from "./ChatListItem/ChatListItem";
 import AddChatBtn from "./AddChatBtn/AddChatBtn";
@@ -10,32 +10,19 @@ import './chat-list.scss';
 
 
 export default function ChatList({
-                                     toggleChat,
                                      chats,
                                      activeChat,
                                      setChats,
                                      alertedChats,
-                                     addAlertedChat
                                  }) {
     const [isContactsOpened, setIsContactsOpened] = useState(false);
     const {changeIsActiveChat} = useActiveChat();
 
     const toggleActiveChat = chatId => {
         changeIsActiveChat(true);
-        console.log(chatId);
         const user = localStorage.getItem("user-email");
         socket.emit('CHAT:TOGGLE_ACTIVE', {user, chatId});
     };
-
-    useEffect(() => {
-        socket.on('CHAT:TOGGLE_MESSAGES', toggleChat);
-        //eslint-disable-next-line
-    }, []);
-
-    useEffect(() => {
-        socket.on('CHAT_ALERT_MESSAGE', addAlertedChat);
-        //eslint-disable-next-line
-    }, []);
 
     const addChatBtnClickHandler = () => {
         setIsContactsOpened(prevIsContactsOpened => !prevIsContactsOpened);
