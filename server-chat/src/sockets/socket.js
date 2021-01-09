@@ -10,7 +10,9 @@ const md5 = require('md5');
 let activeChatId;
 let chatRoom;
 let users = [];
-const usersChats = new Map();
+// const usersChats = new Map();
+
+const usersChats = require('./users');
 
 
 io.on('connection', socket => {
@@ -90,6 +92,8 @@ io.on('connection', socket => {
     });
 
     socket.on('SEND_MESSAGE', async ({content, chatName, from}) => {
+        console.log("S_MESSAGE");
+
         const messageService = new MessageService();
         const _message = await messageService.create({
             content,
@@ -117,15 +121,17 @@ io.on('connection', socket => {
 
         const senderRawData = await _message.getFrom({raw: true});
         const cMessage = {..._message.dataValues, from: senderRawData};
+        console.log(chatName);
+        console.log(socket.rooms);
         io.to(chatName).emit('CHAT:ON_MESSAGE', {
             chat: chatName,
             message: cMessage
         });
 
-        const addresseeUser = usersChats.get(addressee.email);
-        if (addresseeUser.activeChat !== currentChat.id) {
-            addresseeUser.socket.emit("CHAT_ALERT_MESSAGE", {chatName})
-        }
+        // const addresseeUser = usersChats.get(addressee.email);
+        // if (addresseeUser.activeChat !== currentChat.id) {
+        //     addresseeUser.socket.emit("CHAT_ALERT_MESSAGE", {chatName})
+        // }
     });
 
     socket.on("CHAT:DRAFT_MESSAGE", ({userEmail, draftMessage, chat}) => {

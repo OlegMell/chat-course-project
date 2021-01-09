@@ -15,7 +15,7 @@ export default function MessageInput({text, setText, setRawText, draftMessages, 
 
     const draft = draftMessages.find(draft => draft.chat === chat) || {};
 
-    const [tmpText, setTmpText] = useState(draft.draftMessage);
+    const [tmpText, setTmpText] = useState('');
 
     // console.log(draftMessages);
     //
@@ -27,7 +27,7 @@ export default function MessageInput({text, setText, setRawText, draftMessages, 
 
     const inpRef = useRef(null);
 
-    console.log(draftMessages);
+    // console.log(draftMessages);
 
 
     const onEmojiClick = (event, emojiObject) => {
@@ -87,7 +87,7 @@ export default function MessageInput({text, setText, setRawText, draftMessages, 
                         chatName: chat,
                         from: localStorage.getItem("user-email")
                     });
-                    setTmpText('')
+                    // setTmpText('')
                 }}
             >Send
             </button>

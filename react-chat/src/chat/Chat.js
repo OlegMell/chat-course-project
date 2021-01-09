@@ -31,7 +31,10 @@ export default function Chat() {
         loading
     } = useContext(StateContext);
 
+    console.log("chat");
+
     useEffect(() => {
+        console.log("RELOAD");
         reload();
         //eslint-disable-next-line
     }, [])

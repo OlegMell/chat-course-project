@@ -49,7 +49,8 @@ export default (state, action) => {
                 ...state,
                 activeChatMessages: {
                     ...state.activeChatMessages,
-                    [action.payload.chat]: [...state.activeChatMessages[action.payload.chat] || [action.payload.chat], action.payload.message]
+                    [action.payload.chat]: [...state.activeChatMessages[action.payload.chat] ||
+                    [action.payload.chat], action.payload.message]
                 }
             };
         }

@@ -20,7 +20,7 @@ export default function ChatListItem({dragging, dragged, children, ...rest}) {
                     {'backgroundColor': '#f77f00', ...rest.style} :
                     {'backgroundColor': '', ...rest.style}
             }
-            onClick={() => rest.toggleActiveChat(children.chat.id)}
+            onClick={() => toggleActiveChat(children.chat.id)}
             onContextMenu={e => {
                 e.preventDefault();
                 alert();

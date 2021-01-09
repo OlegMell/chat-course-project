@@ -6,12 +6,10 @@ import {
     ADD_ALERTED_CHAT, ADD_DRAFT_MESSAGE,
     NEW_MESSAGE,
     SET_CHATS,
-    SET_DATA,
     SET_MESSAGES_FOR_ACTIVE_CHAT,
     SHOW_LOADER,
     SET_I_DATA
 } from "./types";
-import socket from "../socket/socket";
 
 
 export const StateReducer = ({children}) => {
@@ -53,8 +51,8 @@ export const StateReducer = ({children}) => {
         });
     }
 
-
     const addMessage = async ({chat, message}) => {
+        console.log(message);
         dispatch({
             type: NEW_MESSAGE,
             payload: {chat, message}

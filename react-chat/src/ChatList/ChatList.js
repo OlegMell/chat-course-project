@@ -22,6 +22,7 @@ export default function ChatList({
 
     const toggleActiveChat = chatId => {
         changeIsActiveChat(true);
+        console.log(chatId);
         const user = localStorage.getItem("user-email");
         socket.emit('CHAT:TOGGLE_ACTIVE', {user, chatId});
     };

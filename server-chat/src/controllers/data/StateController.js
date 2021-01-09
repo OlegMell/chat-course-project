@@ -1,21 +1,14 @@
 const AccountService = require('../../services/AccountService');
+const usersChats = require('./../../sockets/users');
 
 class StateController {
     static async getInitialState(req, res) {
         const userEmail = req.body.user;
 
-        console.log(userEmail);
-
         const accountService = new AccountService();
         const user = await accountService.findOne({email: userEmail});
 
-        // const existingChats = await user.getChats({raw: true});
-        // existingChats.forEach(chat => {
-        //     socket.join(chat.name);
-        // });
-
         const chatsRaw = await user.getChats();
-
         let chats = [];
 
         for await (let chat of chatsRaw) {
@@ -24,9 +17,15 @@ class StateController {
             chats.push({chat, addressee});
         }
 
-
-
-
+        usersChats.set(user.email, {
+            existingChats: [],
+            activeChat: '',
+            alertedChats: [],
+            activeChatMessages: {},
+            chats,
+            draftMessages: [],
+            socket: null,
+        })
 
         res.send(JSON.stringify({chats, user: user.dataValues}));
     }
