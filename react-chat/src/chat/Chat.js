@@ -45,7 +45,7 @@ export default function Chat() {
 
     return (
         <>
-            {loading ? <Loader/>
+            {true ? <Loader/>
                 : (<div className={'chat-box vh-100'}>
                     <div className="nav nav-bar vh-10 header">
                         <div className="title">Messages</div>
