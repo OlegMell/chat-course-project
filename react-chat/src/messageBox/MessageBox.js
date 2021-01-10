@@ -1,13 +1,19 @@
-import React, {useEffect, useRef} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import Message from "./message/Message";
 import MessageInput from "./messageInput/MessageInput";
 import {useActiveChat} from "../activeChatContext/ActiveChatContext";
 
 import './message-box.scss';
+import {ContextMenu} from "../ContextMenu/ContextMenu";
 
 export default function MessageBox({messages, chat, draftMessages, addDraftMessage}) {
     const messagesRef = useRef();
     const {isActiveChat} = useActiveChat();
+    const [isContextMenuOpen, setIsContextMenuOpen] = useState(false);
+
+    const contextMenuHandler = () => {
+        setIsContextMenuOpen((prev) => !prev);
+    }
 
     useEffect(() => {
         messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
@@ -17,12 +23,15 @@ export default function MessageBox({messages, chat, draftMessages, addDraftMessa
         if (messages.length === 0) {
             return <h6 className={'tooltip-text'}>No messages yet!</h6>
         }
-        return messages.map(msg => (<Message key={msg.id} msg={msg}/>))
+        return messages.map(msg => (<Message contextMenu={contextMenuHandler} key={msg.id} msg={msg}/>))
     }
 
     return (
         <div className={'message-box'}>
-            <main ref={messagesRef} className={'message-box-messages'}>
+            <main onClick={() => setIsContextMenuOpen(prev => !prev)}
+                  ref={messagesRef}
+                  className={'message-box-messages'}>
+                {!isContextMenuOpen || <ContextMenu position={isContextMenuOpen}/>}
                 {!isActiveChat ? <h6 className={'tooltip-text'}>Select a chat to start messaging</h6> : mapMessages()}
             </main>
             {isActiveChat ? (<footer className={'message-box-footer'}>

@@ -50,6 +50,7 @@ export default function MessageInput({draftMessages, chat, addDraftMessage}) {
         return () => {
             document.removeEventListener('keydown', enterClickHandler)
         }
+        //eslint-disable-next-line
     }, [chat, tmpText])
 
     return (
