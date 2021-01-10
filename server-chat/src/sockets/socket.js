@@ -103,7 +103,6 @@ io.on('connection', socket => {
         });
 
         const chatService = new ChatService();
-        console.log(chatName);
         const currentChat = await chatService.findOneByName(chatName);
         await currentChat.addMessage(_message);
 
@@ -143,6 +142,11 @@ io.on('connection', socket => {
                 usersChats.get(userEmail).draftMessages.push(draft);
             }
         }
+    });
+
+    socket.on("CHAT:REMOVE_MESSAGE", async ({chat, msgId}) => {
+        const messageService = new MessageService();
+        await messageService.removeById(msgId);
     });
 
     socket.on("USERS:SEARCH", (data) => {

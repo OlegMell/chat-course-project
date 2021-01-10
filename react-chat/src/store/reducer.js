@@ -102,6 +102,17 @@ export default (state, action) => {
                 activeChat: null
             }
 
+        case types.REMOVE_MESSAGE:
+            return {
+                ...state,
+                activeChatMessages: {
+                    ...state.activeChatMessages,
+                    [action.payload.chat]:
+                        [...state.activeChatMessages[action.payload.chat]
+                            .filter(msg => msg.id !== action.payload.msgId)]
+                }
+            }
+
         default:
             return state;
     }

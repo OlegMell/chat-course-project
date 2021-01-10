@@ -1,6 +1,5 @@
-import React, {useState} from "react";
+import React from "react";
 import './message.scss';
-import {ContextMenu} from "../../ContextMenu/ContextMenu";
 
 export default function Message({contextMenu, msg}) {
     let style;
@@ -17,7 +16,7 @@ export default function Message({contextMenu, msg}) {
     return (
         <div className={'message'} style={style} onContextMenu={e => {
             e.preventDefault();
-            contextMenu();
+            contextMenu(msg.id);
         }}>
             <header className={'message-header'}>
                 {`${msg.from.firstname} ${msg.from.lastname}`}

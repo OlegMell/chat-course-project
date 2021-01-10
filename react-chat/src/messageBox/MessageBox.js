@@ -5,15 +5,28 @@ import {useActiveChat} from "../activeChatContext/ActiveChatContext";
 
 import './message-box.scss';
 import {ContextMenu} from "../ContextMenu/ContextMenu";
+import socket from '../socket/socket';
 
-export default function MessageBox({messages, chat, draftMessages, addDraftMessage}) {
+export default function MessageBox({messages, chat, draftMessages, addDraftMessage, removeMessage}) {
     const messagesRef = useRef();
     const {isActiveChat} = useActiveChat();
     const [isContextMenuOpen, setIsContextMenuOpen] = useState(false);
+    const [msgId, setMsgId] = useState(null);
 
-    const contextMenuHandler = () => {
+    const contextMenuHandler = (msgId) => {
         setIsContextMenuOpen((prev) => !prev);
+        setMsgId(msgId);
     }
+
+    const copyText = () => {
+
+    }
+
+    const removeMessageHandler = () => {
+        console.log('here');
+        socket.emit('CHAT:REMOVE_MESSAGE', {chat, msgId})
+        removeMessage(chat, msgId)
+    };
 
     useEffect(() => {
         messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
@@ -28,10 +41,10 @@ export default function MessageBox({messages, chat, draftMessages, addDraftMessa
 
     return (
         <div className={'message-box'}>
-            <main onClick={() => setIsContextMenuOpen(prev => !prev)}
+            <main onClick={() => setIsContextMenuOpen(prev => false)}
                   ref={messagesRef}
                   className={'message-box-messages'}>
-                {!isContextMenuOpen || <ContextMenu position={isContextMenuOpen}/>}
+                {!isContextMenuOpen || <ContextMenu removeMessage={removeMessageHandler} position={isContextMenuOpen}/>}
                 {!isActiveChat ? <h6 className={'tooltip-text'}>Select a chat to start messaging</h6> : mapMessages()}
             </main>
             {isActiveChat ? (<footer className={'message-box-footer'}>

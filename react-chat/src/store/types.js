@@ -19,3 +19,5 @@ export const SHOW_LOADER= 'SHOW_LOADER'
 export const SET_I_DATA = 'SET_I_DATA'
 
 export const UNSET_ACTIVE_CHAT = 'UNSET_ACTIVE_CHAT'
+
+export const REMOVE_MESSAGE = 'REMOVE_MESSAGE'

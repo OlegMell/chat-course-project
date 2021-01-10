@@ -29,7 +29,8 @@ export default function Chat() {
         setMessagesForActiveChat,
         addDraftMessage,
         loading,
-        unsetActiveChat
+        unsetActiveChat,
+        removeMessage,
     } = useContext(StateContext);
 
     useEffect(() => {
@@ -81,6 +82,7 @@ export default function Chat() {
                                     draftMessages={draftMessages || []}
                                     onAddMessage={addMessage}
                                     addDraftMessage={addDraftMessage}
+                                    removeMessage={removeMessage}
                                 />
                             </SplitterLayout>
                         </ActiveChatProvider>
