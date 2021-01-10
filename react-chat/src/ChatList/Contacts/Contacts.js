@@ -2,17 +2,15 @@ import React, {useState} from "react";
 
 import './contacts.scss';
 
-import {web} from "../../client_secret.json";
+// import {web} from "../../client_secret.json";
 import socket from "../../socket/socket";
-
-// console.log(web);
 
 export default function Contacts({isOpen}) {
   const [contacts, setContacts] = useState();
 
-  const googleClickHandler = async () => {
-    await fetch(`${web.auth_uri}?scope=https://www.google.com/m8/feeds&access_type=offline&include_granted_scopes=true&redirect_uri=${web.redirect_uris[0]}&response_type=code&client_id=${web.client_id}`);
-  };
+  // const googleClickHandler = async () => {
+  //   await fetch(`${web.auth_uri}?scope=https://www.google.com/m8/feeds&access_type=offline&include_granted_scopes=true&redirect_uri=${web.redirect_uris[0]}&response_type=code&client_id=${web.client_id}`);
+  // };
 
   const onFindUser = ({target}) => {
     if (target.value !== '') {
@@ -25,7 +23,6 @@ export default function Contacts({isOpen}) {
   };
 
   const onUserItemClicked = userId => {
-    console.log(userId);
     socket.emit("CHAT:START", {email: localStorage.getItem("user-email"), userId});
     socket.on("CHAT:EXIST", () => {
       console.log("chat exist");
@@ -47,7 +44,9 @@ export default function Contacts({isOpen}) {
                   (<div onClick={() => onUserItemClicked(contact.id)} key={contact.id} className={'contacts__main-list-item'}>
                     <div className={'contact-image-wrapper'}>
                       <img className={'contact-image'}
-                           src={`https://drive.google.com/uc?export=view&id=${contact.image}`}/>
+                           src={`https://drive.google.com/uc?export=view&id=${contact.image}`}
+                            alt={'profile'}
+                      />
                     </div>
                     {contact.firstname} {contact.lastname}
                   </div>))) :

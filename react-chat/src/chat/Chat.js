@@ -33,6 +33,8 @@ export default function Chat() {
 
     useEffect(() => {
         reload();
+        // const userEmail = localStorage.getItem('user-email');
+        // socket.emit('USER:AUTH', userEmail);
         //eslint-disable-next-line
     }, [])
 

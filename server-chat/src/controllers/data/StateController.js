@@ -1,5 +1,5 @@
 const AccountService = require('../../services/AccountService');
-const usersChats = require('./../../sockets/users');
+const usersChats = require('../../sockets/users');
 
 class StateController {
     static async getInitialState(req, res) {
@@ -24,7 +24,7 @@ class StateController {
             activeChatMessages: {},
             chats,
             draftMessages: [],
-            socket: null,
+            socket: null
         })
 
         res.send(JSON.stringify({chats, user: user.dataValues}));

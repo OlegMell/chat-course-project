@@ -1,44 +1,37 @@
 import React, {useRef, useState} from "react";
 import Picker from "emoji-picker-react";
 import SpeechInput from "./SpeechInput/SpeechInput";
-import SpeechRecognition, {useSpeechRecognition} from 'react-speech-recognition';
+import SpeechRecognition /*{useSpeechRecognition}*/ from 'react-speech-recognition';
 
-import {ADD_DRAFT_MESSAGE} from '../../store/types';
 import socket from "../../socket/socket";
 import './message-inp.scss';
 
 
 export default function MessageInput({draftMessages, chat, addDraftMessage}) {
     // const {transcript, resetTranscript} = useSpeechRecognition();
-
     // const [isSpeechClicked, setIsSpeechClicked] = useState(false);
-
-    const draft = draftMessages.find(draft => draft.chat === chat) || {};
-
-    const [tmpText, setTmpText] = useState(draft.draftMessage);
-
+    // const draft = draftMessages.find(draft => draft.chat === chat) || {};
+    const [tmpText, setTmpText] = useState('');
     const [isEmojiBtnClicked, setIsEmojiBtnClicked] = useState('');
-
     const [cursorPos, setCursorPos] = useState(0);
-
     const inpRef = useRef(null);
 
     const onEmojiClick = (event, emojiObject) => {
         const textArray = tmpText.split('');
         textArray.splice(cursorPos, 0, String.fromCodePoint(parseInt(emojiObject.unified, 16)));
         setTmpText(textArray.join(''));
-        setCursorPos((cursorPos) => cursorPos += 2);
+        setCursorPos((prevCursorPos) => prevCursorPos += 2);
     };
 
-    // const onSpeechClicked = () => {
-    //     SpeechRecognition.startListening();
-    //     // setIsSpeechClicked(!isSpeechClicked);
-    // };
+    const onSpeechClicked = () => {
+        SpeechRecognition.startListening();
+        // setIsSpeechClicked(!isSpeechClicked);
+    };
 
     return (
         <div className={'message-input-box'}>
-            {/*<SpeechInput h={onSpeechClicked} speech={SpeechRecognition}*/}
-            {/*             st={setText}/>*/}
+            <SpeechInput h={onSpeechClicked} speech={SpeechRecognition}
+                         st={setTmpText}/>
             <button onClick={() => setIsEmojiBtnClicked(!isEmojiBtnClicked)}
                     className={'message-box-footer__emoji-btn'}>
                 <svg width="1em" height="1em" viewBox="0 0 16 16"

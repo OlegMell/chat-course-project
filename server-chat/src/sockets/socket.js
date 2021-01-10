@@ -5,14 +5,12 @@ const AccountService = require('../services/AccountService');
 const ChatService = require('../services/ChatService');
 const MessageService = require('../services/MessageService');
 const md5 = require('md5');
+const usersChats = require('./users');
 
 
 let activeChatId;
 let chatRoom;
 let users = [];
-// const usersChats = new Map();
-
-const usersChats = require('./users');
 
 
 io.on('connection', socket => {
@@ -77,6 +75,11 @@ io.on('connection', socket => {
             });
     });
 
+    // socket.on("USER:AUTH", (userEmail) => {
+    //     console.log(userEmail);
+    //     usersChats.get(userEmail).socket = socket;
+    // })
+
     socket.on('CHAT:TOGGLE_ACTIVE', ({user, chatId}) => {
         activeChatId = chatId;
         usersChats.get(user).activeChat = chatId;
@@ -92,8 +95,6 @@ io.on('connection', socket => {
     });
 
     socket.on('SEND_MESSAGE', async ({content, chatName, from}) => {
-        console.log("S_MESSAGE");
-
         const messageService = new MessageService();
         const _message = await messageService.create({
             content,
@@ -112,6 +113,7 @@ io.on('connection', socket => {
             const userChats = usersChats.get(addressee.email);
             if (userChats.activeChat !== currentChat.id) {
                 userChats.alertedChats.push(chatName)
+                usersChats.get(addressee.email).socket.emit("CHAT_ALERT_MESSAGE", {chatName})
             }
         }
 
@@ -127,11 +129,6 @@ io.on('connection', socket => {
             chat: chatName,
             message: cMessage
         });
-
-        // const addresseeUser = usersChats.get(addressee.email);
-        // if (addresseeUser.activeChat !== currentChat.id) {
-        //     addresseeUser.socket.emit("CHAT_ALERT_MESSAGE", {chatName})
-        // }
     });
 
     socket.on("CHAT:DRAFT_MESSAGE", ({userEmail, draftMessage, chat}) => {

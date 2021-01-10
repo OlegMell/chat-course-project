@@ -8,8 +8,10 @@ import {
     SET_CHATS,
     SET_MESSAGES_FOR_ACTIVE_CHAT,
     SHOW_LOADER,
-    SET_I_DATA
+    // SET_I_DATA,
+    SET_DATA
 } from "./types";
+import socket from "../socket/socket";
 
 
 export const StateReducer = ({children}) => {
@@ -19,29 +21,29 @@ export const StateReducer = ({children}) => {
 
     const reload = async () => {
         showLoader();
-        const user = localStorage.getItem("user-email");
-        const res = await fetch(`http://localhost:9999/api/data/state/`, {
-            method: 'POST',
-            body: JSON.stringify({user}),
-            headers: {
-                "Content-Type": "application/json"
-            }
-        });
-        if (res.status === 200) {
-            const data = await res.json();
-            console.log(data);
-            dispatch({
-                type: SET_I_DATA,
-                payload: data
-            })
-        }
-        // socket.emit('USER:AUTHORIZE', {email: localStorage.getItem('user-email')});
-        // socket.on('APP:SET_INIT_STATE', data => {
+        // const user = localStorage.getItem("user-email");
+        // const res = await fetch(`http://localhost:9999/api/data/state/`, {
+        //     method: 'POST',
+        //     body: JSON.stringify({user}),
+        //     headers: {
+        //         "Content-Type": "application/json"
+        //     }
+        // });
+        // if (res.status === 200) {
+        //     const data = await res.json();
+        //     console.log(data);
         //     dispatch({
-        //         type: SET_DATA,
+        //         type: SET_I_DATA,
         //         payload: data
         //     })
-        // })
+        // }
+        socket.emit('USER:AUTHORIZE', {email: localStorage.getItem('user-email')});
+        socket.on('APP:SET_INIT_STATE', data => {
+            dispatch({
+                type: SET_DATA,
+                payload: data
+            })
+        })
     }
 
     const changeChatsOrder = async (chats) => {
@@ -52,7 +54,6 @@ export const StateReducer = ({children}) => {
     }
 
     const addMessage = ({chat, message}) => {
-        console.log(message);
         dispatch({
             type: NEW_MESSAGE,
             payload: {chat, message}

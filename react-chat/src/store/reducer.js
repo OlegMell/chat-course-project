@@ -5,7 +5,8 @@ export default (state, action) => {
         case types.SET_DATA:
             return {
                 ...state,
-                ...action.payload
+                ...action.payload,
+                loading: false
             };
 
         case types.SET_ACTIVE_CHAT:
