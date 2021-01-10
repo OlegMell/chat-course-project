@@ -28,7 +28,8 @@ export default function Chat() {
         addMessage,
         setMessagesForActiveChat,
         addDraftMessage,
-        loading
+        loading,
+        unsetActiveChat
     } = useContext(StateContext);
 
     useEffect(() => {
@@ -72,6 +73,7 @@ export default function Chat() {
                                           setChats={changeChatsOrder}
                                           alertedChats={alertedChats}
                                           addAlertedChat={addAlertedChat}
+                                          unsetActiveChat = {unsetActiveChat}
                                 />
                                 <MessageBox
                                     messages={activeChatMessages[activeChat] || []}

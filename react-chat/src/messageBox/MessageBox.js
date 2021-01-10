@@ -5,19 +5,9 @@ import {useActiveChat} from "../activeChatContext/ActiveChatContext";
 
 import './message-box.scss';
 
-export default function MessageBox({messages, chat, onAddMessage, draftMessages, addDraftMessage}) {
+export default function MessageBox({messages, chat, draftMessages, addDraftMessage}) {
     const messagesRef = useRef();
     const {isActiveChat} = useActiveChat();
-
-    // function sendBtnClickHandler() {
-    //     socket.emit("SEND_MESSAGE", {
-    //         content: inputText,
-    //         chatName: chat,
-    //         from: localStorage.getItem("user-email")
-    //     });
-    //     setInputText("");
-    // }
-
 
     useEffect(() => {
         messagesRef.current.scrollTop = messagesRef.current.scrollHeight;

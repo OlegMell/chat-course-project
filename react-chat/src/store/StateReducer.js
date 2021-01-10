@@ -9,7 +9,7 @@ import {
     SET_MESSAGES_FOR_ACTIVE_CHAT,
     SHOW_LOADER,
     // SET_I_DATA,
-    SET_DATA
+    SET_DATA, UNSET_ACTIVE_CHAT
 } from "./types";
 import socket from "../socket/socket";
 
@@ -87,10 +87,17 @@ export const StateReducer = ({children}) => {
         })
     }
 
+    const unsetActiveChat = () => {
+        dispatch({
+            type: UNSET_ACTIVE_CHAT
+        })
+    }
+
 
     return (
         <StateContext.Provider value={{
-            reload, addMessage, setMessagesForActiveChat, changeChatsOrder, addAlertedChat, addDraftMessage,
+            reload, addMessage, setMessagesForActiveChat, changeChatsOrder,
+            addAlertedChat, addDraftMessage, unsetActiveChat,
             ...state
         }}>
             {children}

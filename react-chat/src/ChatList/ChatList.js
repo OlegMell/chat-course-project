@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import SortableList from "react-sortable-dnd-list";
 import ChatListItem from "./ChatListItem/ChatListItem";
 import AddChatBtn from "./AddChatBtn/AddChatBtn";
@@ -9,12 +9,7 @@ import socket from "../socket/socket";
 import './chat-list.scss';
 
 
-export default function ChatList({
-                                     chats,
-                                     activeChat,
-                                     setChats,
-                                     alertedChats,
-                                 }) {
+export default function ChatList({chats, activeChat, setChats, alertedChats, unsetActiveChat}) {
     const [isContactsOpened, setIsContactsOpened] = useState(false);
     const {changeIsActiveChat} = useActiveChat();
 
@@ -23,6 +18,21 @@ export default function ChatList({
         const user = localStorage.getItem("user-email");
         socket.emit('CHAT:TOGGLE_ACTIVE', {user, chatId});
     };
+
+    const escapeKeyDownHandler = ({key}) => {
+        if (key === 'Escape') {
+            changeIsActiveChat(false);
+            unsetActiveChat();
+        }
+    }
+
+    useEffect(() => {
+        document.addEventListener('keydown', escapeKeyDownHandler);
+
+        return () => {
+            document.removeEventListener('keydown', escapeKeyDownHandler);
+        }
+    }, [])
 
     const addChatBtnClickHandler = () => {
         setIsContactsOpened(prevIsContactsOpened => !prevIsContactsOpened);

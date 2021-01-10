@@ -96,6 +96,12 @@ export default (state, action) => {
                 loading: false
             }
 
+        case types.UNSET_ACTIVE_CHAT:
+            return {
+                ...state,
+                activeChat: null
+            }
+
         default:
             return state;
     }
