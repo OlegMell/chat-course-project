@@ -18,14 +18,16 @@ export default function MessageBox({messages, chat, draftMessages, addDraftMessa
         setMsgId(msgId);
     }
 
-    const copyText = () => {
-
+    const copyText = async () => {
+        await navigator.clipboard.writeText(messages.find(msg => msg.id === msgId).content);
+        setIsContextMenuOpen(false)
     }
 
     const removeMessageHandler = () => {
-        console.log('here');
         socket.emit('CHAT:REMOVE_MESSAGE', {chat, msgId})
         removeMessage(chat, msgId)
+        setIsContextMenuOpen(false)
+
     };
 
     useEffect(() => {
@@ -41,10 +43,11 @@ export default function MessageBox({messages, chat, draftMessages, addDraftMessa
 
     return (
         <div className={'message-box'}>
-            <main onClick={() => setIsContextMenuOpen(prev => false)}
+            <main onClick={() => setIsContextMenuOpen(false)}
                   ref={messagesRef}
                   className={'message-box-messages'}>
-                {!isContextMenuOpen || <ContextMenu removeMessage={removeMessageHandler} position={isContextMenuOpen}/>}
+                {!isContextMenuOpen ||
+                <ContextMenu copyText={copyText} removeMessage={removeMessageHandler} position={isContextMenuOpen}/>}
                 {!isActiveChat ? <h6 className={'tooltip-text'}>Select a chat to start messaging</h6> : mapMessages()}
             </main>
             {isActiveChat ? (<footer className={'message-box-footer'}>
