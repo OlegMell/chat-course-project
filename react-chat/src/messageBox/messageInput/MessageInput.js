@@ -1,4 +1,4 @@
-import React, {useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import Picker from "emoji-picker-react";
 import SpeechInput from "./SpeechInput/SpeechInput";
 import SpeechRecognition /*{useSpeechRecognition}*/ from 'react-speech-recognition';
@@ -28,6 +28,30 @@ export default function MessageInput({draftMessages, chat, addDraftMessage}) {
         // setIsSpeechClicked(!isSpeechClicked);
     };
 
+    const sendBtnClick = () => {
+        socket.emit("SEND_MESSAGE", {
+            content: tmpText,
+            chatName: chat,
+            from: localStorage.getItem("user-email")
+        });
+        setTmpText('')
+    };
+
+    const enterClickHandler = (e) => {
+        if (e.shiftKey && e.key === 'Enter') {
+            e.preventDefault();
+            sendBtnClick();
+        }
+    }
+
+    useEffect(() => {
+        document.addEventListener('keydown', enterClickHandler)
+
+        return () => {
+            document.removeEventListener('keydown', enterClickHandler)
+        }
+    }, [chat, tmpText])
+
     return (
         <div className={'message-input-box'}>
             <SpeechInput h={onSpeechClicked} speech={SpeechRecognition}
@@ -51,7 +75,7 @@ export default function MessageInput({draftMessages, chat, addDraftMessage}) {
             {/*{transcript}*/}
             <textarea ref={inpRef}
                       value={tmpText}
-                      onChange={(e) => {
+                      onChange={() => {
                           setTmpText(inpRef.current.value)
                           addDraftMessage(chat, tmpText);
                           socket.emit("CHAT:DRAFT_MESSAGE", {
@@ -61,20 +85,13 @@ export default function MessageInput({draftMessages, chat, addDraftMessage}) {
                           })
                       }}
                       onFocus={() => setCursorPos(inpRef.current.selectionStart)}
+                      onKeyUp={() => setCursorPos(inpRef.current.selectionStart)}
                       className={'message-input-box__inp'}
                       placeholder={'Type message...'}
-                      onKeyUp={() => setCursorPos(inpRef.current.selectionStart)}
             />
             <button
                 className={'sendBtn btn btn-success'}
-                onClick={() => {
-                    socket.emit("SEND_MESSAGE", {
-                        content: tmpText,
-                        chatName: chat,
-                        from: localStorage.getItem("user-email")
-                    });
-                    setTmpText('')
-                }}
+                onClick={sendBtnClick}
             >Send
             </button>
         </div>

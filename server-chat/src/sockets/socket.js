@@ -103,6 +103,7 @@ io.on('connection', socket => {
         });
 
         const chatService = new ChatService();
+        console.log(chatName);
         const currentChat = await chatService.findOneByName(chatName);
         await currentChat.addMessage(_message);
 
