@@ -75,10 +75,10 @@ io.on('connection', socket => {
             });
     });
 
-    // socket.on("USER:AUTH", (userEmail) => {
-    //     console.log(userEmail);
-    //     usersChats.get(userEmail).socket = socket;
-    // })
+    socket.on('CHAT:UNSET_ACTIVE_CHAT', ({user}) => {
+        activeChatId = '';
+        usersChats.get(user).activeChat = '';
+    });
 
     socket.on('CHAT:TOGGLE_ACTIVE', ({user, chatId}) => {
         activeChatId = chatId;
@@ -123,8 +123,6 @@ io.on('connection', socket => {
 
         const senderRawData = await _message.getFrom({raw: true});
         const cMessage = {..._message.dataValues, from: senderRawData};
-        console.log(chatName);
-        console.log(socket.rooms);
         io.to(chatName).emit('CHAT:ON_MESSAGE', {
             chat: chatName,
             message: cMessage

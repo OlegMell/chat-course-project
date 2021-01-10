@@ -23,6 +23,7 @@ export default function ChatList({chats, activeChat, setChats, alertedChats, uns
         if (key === 'Escape') {
             changeIsActiveChat(false);
             unsetActiveChat();
+            socket.emit('CHAT:UNSET_ACTIVE_CHAT', {user: localStorage.getItem('user-email')});
         }
     }
 
@@ -32,6 +33,7 @@ export default function ChatList({chats, activeChat, setChats, alertedChats, uns
         return () => {
             document.removeEventListener('keydown', escapeKeyDownHandler);
         }
+        //eslint-disable-next-line
     }, [])
 
     const addChatBtnClickHandler = () => {
