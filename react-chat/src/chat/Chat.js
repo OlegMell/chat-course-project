@@ -48,6 +48,8 @@ export default function Chat() {
         //eslint-disable-next-line
     }, []);
 
+
+
     return (
         <>
             {loading ? <Loader/>
@@ -79,7 +81,7 @@ export default function Chat() {
                                           existingChats={existingChats}
                                 />
                                 <MessageBox
-                                    messages={activeChatMessages[activeChat] || []}
+                                    messages={activeChatMessages[activeChat]?.messages || []}
                                     chat={activeChat}
                                     draftMessages={draftMessages || []}
                                     onAddMessage={addMessage}

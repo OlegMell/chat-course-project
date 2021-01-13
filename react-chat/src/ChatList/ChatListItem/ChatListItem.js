@@ -8,18 +8,11 @@ export default function ChatListItem({dragging, dragged, children, ...rest}) {
     const currentUserEmail = localStorage.getItem("user-email");
 
     let res = '';
-    if (alertedChats.length > 0) {
-        res = alertedChats.find(chat => chat.name === children.chat.name);
-    }
-
     const lastMsg = existingChats.find(item => item.chat.name === children.chat.name) || {};
 
-    if (lastMsg.msg) {
-        if (lastMsg.msg.from.email === currentUserEmail) {
-            res = '';
-        }
+    if (alertedChats.length > 0) {
+        res = (lastMsg.msg.from.email !== currentUserEmail && !lastMsg.msg.read);
     }
-
 
     let lastMsgDate;
     let currentDate;

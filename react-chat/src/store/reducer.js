@@ -27,13 +27,20 @@ export default (state, action) => {
         case types.SET_MESSAGES_FOR_ACTIVE_CHAT:
             return {
                 ...state,
+                // activeChatMessages: {
+                //     ...state.activeChatMessages,
+                //     [action.payload.chat]: action.payload.messages
+                // },
                 activeChatMessages: {
                     ...state.activeChatMessages,
-                    [action.payload.chat]: action.payload.messages
+                    [action.payload.chat.name] : {
+                        chat: action.payload.chat,
+                        messages: action.payload.messages
+                    }
                 },
-                activeChat: action.payload.chat,
+                activeChat: action.payload.chat.name,
                 alertedChats: [
-                    ...state.alertedChats.filter(chat => chat !== action.payload.chat)
+                    ...state.alertedChats.filter(chat => chat !== action.payload.chat.name)
                 ]
             }
 
@@ -46,13 +53,24 @@ export default (state, action) => {
             };
 
         case types.NEW_MESSAGE: {
+            let messages = [];
+            if (state.activeChatMessages[action.payload.chat.name] && state.activeChatMessages[action.payload.chat.name].messages) {
+                messages = [...state.activeChatMessages[action.payload.chat.name].messages];
+            }
+
+            // let fc = state.existingChats.find(item => item.chat.name === action.payload.chat.name);
+
+
             return {
                 ...state,
                 activeChatMessages: {
                     ...state.activeChatMessages,
-                    [action.payload.chat]: [...state.activeChatMessages[action.payload.chat] ||
-                    [action.payload.chat], action.payload.message]
-                }
+                    [action.payload.chat.name] : {
+                        chat: action.payload.chat,
+                        messages: [...messages, action.payload.msg]
+                    }
+                },
+                existingChats: [...state.existingChats.filter(item => item.chat.name !== action.payload.chat.name), action.payload]
             };
         }
 

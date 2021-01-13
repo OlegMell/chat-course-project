@@ -55,19 +55,19 @@ export const StateReducer = ({children}) => {
         });
     }
 
-    const addMessage = ({chat, message}) => {
+    const addMessage = ({chat, msg}) => {
         dispatch({
             type: NEW_MESSAGE,
-            payload: {chat, message}
+            payload: {chat, msg }
         });
     };
 
-    const setMessagesForActiveChat = async ({messages, chatRoom}) => {
+    const setMessagesForActiveChat = async ({messages, chat}) => {
         dispatch({
             type: SET_MESSAGES_FOR_ACTIVE_CHAT,
             payload: {
                 messages,
-                chat: chatRoom
+                chat
             }
         })
     };

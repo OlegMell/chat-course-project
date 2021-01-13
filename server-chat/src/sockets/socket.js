@@ -16,7 +16,7 @@ let users = [];
 io.on('connection', socket => {
     socket.on('USER:AUTHORIZE', (userData) => {
         const accountService = new AccountService();
-        accountService.findOne(userData)
+        accountService.fichdOne(userData)
             .then(async user => {
                 // let g = new GoogleDriveService();
                 // const image = g.getImage(user.image);
@@ -117,7 +117,7 @@ io.on('connection', socket => {
                 }
                 chatRoom = chat.name;
                 socket.join(chatRoom);
-                socket.emit('CHAT:TOGGLE_MESSAGES', {messages, chatRoom});
+                socket.emit('CHAT:TOGGLE_MESSAGES', {messages, chat});
             });
     });
 
@@ -151,6 +151,10 @@ io.on('connection', socket => {
                 await currentChat.save();
                 userChats.alertedChats.push(chatName)
                 usersChats.get(addressee.email).socket.emit("CHAT:ALERT_MESSAGE", {chatName})
+            } else {
+                await _message.update({
+                    read: true
+                });
             }
         }
 
@@ -161,8 +165,8 @@ io.on('connection', socket => {
         const senderRawData = await _message.getFrom({raw: true});
         const cMessage = {..._message.dataValues, from: senderRawData};
         io.to(chatName).emit('CHAT:ON_MESSAGE', {
-            chat: chatName,
-            message: cMessage
+            chat: currentChat,
+            msg: cMessage
         });
     });
 

@@ -1,11 +1,13 @@
 import React, {useEffect, useRef, useState} from "react";
+
 import Message from "./message/Message";
 import MessageInput from "./messageInput/MessageInput";
 import {useActiveChat} from "../activeChatContext/ActiveChatContext";
-
-import './message-box.scss';
 import {ContextMenu} from "../ContextMenu/ContextMenu";
 import socket from '../socket/socket';
+
+import './message-box.scss';
+
 
 export default function MessageBox({messages, chat, draftMessages, addDraftMessage, removeMessage}) {
     const messagesRef = useRef();
@@ -17,6 +19,7 @@ export default function MessageBox({messages, chat, draftMessages, addDraftMessa
         setIsContextMenuOpen((prev) => !prev);
         setMsgId(msgId);
     }
+
 
     const copyText = async () => {
         await navigator.clipboard.writeText(messages.find(msg => msg.id === msgId).content);
