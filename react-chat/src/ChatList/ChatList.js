@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import SortableList from "react-sortable-dnd-list";
 import ChatListItem from "./ChatListItem/ChatListItem";
 import AddChatBtn from "./AddChatBtn/AddChatBtn";
@@ -9,7 +9,7 @@ import socket from "../socket/socket";
 import './chat-list.scss';
 
 
-export default function ChatList({chats, activeChat, setChats, alertedChats, unsetActiveChat}) {
+export default function ChatList({chats, activeChat, setChats, alertedChats, unsetActiveChat, existingChats}) {
     const [isContactsOpened, setIsContactsOpened] = useState(false);
     const {changeIsActiveChat} = useActiveChat();
 
@@ -17,6 +17,9 @@ export default function ChatList({chats, activeChat, setChats, alertedChats, uns
         changeIsActiveChat(true);
         const user = localStorage.getItem("user-email");
         socket.emit('CHAT:TOGGLE_ACTIVE', {user, chatId});
+        if (alertedChats.find(chat => chat.id === chatId)) {
+            socket.emit('CHAT:REMOVE_ALERTED', {chatId})
+        }
     };
 
     const escapeKeyDownHandler = ({key}) => {
@@ -46,7 +49,9 @@ export default function ChatList({chats, activeChat, setChats, alertedChats, uns
                 (<ChatListItem children={{...chats[0]}}
                                toggleActiveChat={toggleActiveChat}
                                activeChat={activeChat}
-                               alertedChats={alertedChats}/>) :
+                               alertedChats={alertedChats}
+                               existingChats={existingChats}
+                />) :
                 (<SortableList
                     itemComponent={ChatListItem}
                     value={chats}
@@ -54,7 +59,8 @@ export default function ChatList({chats, activeChat, setChats, alertedChats, uns
                     itemComponentProps={{
                         toggleActiveChat,
                         activeChat,
-                        alertedChats
+                        alertedChats,
+                        existingChats
                     }}
                 />)}
             <div className={'chat-list-box__footer'}>

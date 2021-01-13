@@ -28,9 +28,28 @@
 
   .chat-name-wrapper {
     display: flex;
+    flex-direction: column;
     width: 70%;
     justify-content: space-between;
+    align-items: start;
+
+    .last-msg {
+      font-size: 13px;
+      color: rgba(white, .8);
+      max-width: 350px;
+    }
+  }
+
+  .info-box {
+    display: flex;
+    flex-direction: column;
     align-items: center;
+    justify-content: space-around;
+    height: 50px;
+
+    .last-msg-date {
+      color: rgba(white, .7);
+    }
 
     .chat-item-badge {
       width: 10px;

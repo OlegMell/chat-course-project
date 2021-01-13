@@ -27,7 +27,6 @@ export default function MessageBox({messages, chat, draftMessages, addDraftMessa
         socket.emit('CHAT:REMOVE_MESSAGE', {chat, msgId})
         removeMessage(chat, msgId)
         setIsContextMenuOpen(false)
-
     };
 
     useEffect(() => {

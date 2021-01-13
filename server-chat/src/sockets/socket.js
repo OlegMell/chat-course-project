@@ -21,16 +21,31 @@ io.on('connection', socket => {
                 // let g = new GoogleDriveService();
                 // const image = g.getImage(user.image);
 
-                const existingChats = await user.getChats({raw: true});
+                const existingChats = await user.getChats();
                 existingChats.forEach(chat => {
                     socket.join(chat.name);
                 });
 
+                let chatsWithLastMessage = [];
+                for await (chat of existingChats) {
+                    let msgs = await chat.getMessages({limit: 1, order: [['createdAt', 'DESC']]})
+                    if (msgs[0]) {
+                        const from = await msgs[0].getFrom({raw: true});
+                        const msg = msgs[0].dataValues;
+                        msg.from = from;
+                        chatsWithLastMessage.push({
+                            chat: chat.dataValues,
+                            msg
+                        })
+                    }
+                }
+
+                const alertedChats = existingChats.filter(chat => chat.alerted);
                 if (!usersChats.has(user.email)) {
                     usersChats.set(user.email, {
-                        existingChats,
+                        existingChats: chatsWithLastMessage,
                         activeChat: '',
-                        alertedChats: [],
+                        alertedChats,
                         activeChatMessages: {},
                         chats: [],
                         draftMessages: [],
@@ -39,9 +54,10 @@ io.on('connection', socket => {
                 } else {
                     usersChats.get(user.email).socket = socket;
                     usersChats.get(user.email).activeChat = null;
-                    usersChats.get(user.email).alertedChats = [];
+                    usersChats.get(user.email).alertedChats = alertedChats;
                     usersChats.get(user.email).chats = [];
                     usersChats.get(user.email).activeChatMessages = {};
+                    usersChats.get(user.email).existingChats = chatsWithLastMessage;
                     // usersChats.get(user.email).draftMessages = []
                 }
 
@@ -88,11 +104,30 @@ io.on('connection', socket => {
         chatService.findOneById(chatId)
             .then(async chat => {
                 const messages = await chat.getMessages({include: 'from'});
+                for await (msg of messages) {
+                    const from = await msg.getFrom();
+                    if (from.email !== user) {
+                        await msg.update({
+                            read: true,
+                            where: {
+                                read: false
+                            }
+                        })
+                    }
+                }
                 chatRoom = chat.name;
                 socket.join(chatRoom);
                 socket.emit('CHAT:TOGGLE_MESSAGES', {messages, chatRoom});
             });
     });
+
+    socket.on('CHAT:REMOVE_ALERTED', async ({chatId}) => {
+        console.log(chatId);
+        const chatService = new ChatService();
+        const chat = await chatService.findOneById(chatId);
+        chat.alerted = false;
+        await chat.save();
+    })
 
     socket.on('SEND_MESSAGE', async ({content, chatName, from}) => {
         const messageService = new MessageService();
@@ -112,6 +147,8 @@ io.on('connection', socket => {
         if (usersChats.has(addressee.email)) {
             const userChats = usersChats.get(addressee.email);
             if (userChats.activeChat !== currentChat.id) {
+                currentChat.alerted = true;
+                await currentChat.save();
                 userChats.alertedChats.push(chatName)
                 usersChats.get(addressee.email).socket.emit("CHAT_ALERT_MESSAGE", {chatName})
             }

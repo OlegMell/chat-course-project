@@ -40,6 +40,7 @@ export const StateReducer = ({children}) => {
         // }
         socket.emit('USER:AUTHORIZE', {email: localStorage.getItem('user-email')});
         socket.on('APP:SET_INIT_STATE', data => {
+            console.log(data);
             dispatch({
                 type: SET_DATA,
                 payload: data

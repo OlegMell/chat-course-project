@@ -31,6 +31,7 @@ export default function Chat() {
         loading,
         unsetActiveChat,
         removeMessage,
+        existingChats
     } = useContext(StateContext);
 
     useEffect(() => {
@@ -75,6 +76,7 @@ export default function Chat() {
                                           alertedChats={alertedChats}
                                           addAlertedChat={addAlertedChat}
                                           unsetActiveChat = {unsetActiveChat}
+                                          existingChats={existingChats}
                                 />
                                 <MessageBox
                                     messages={activeChatMessages[activeChat] || []}
