@@ -30,12 +30,8 @@ export default function ChatListItem({dragging, dragged, children, ...rest}) {
 
     return (
         <div
-            className={'list-item'}
-            style={
-                children.chat.name === activeChat ?
-                    {'backgroundColor': '#f77f00', ...rest.style} :
-                    {'backgroundColor': '', ...rest.style}
-            }
+            className={`list-item ${dragged ? 'dragged' : ''} ${children.chat.name === activeChat ? 'active-chat' : ''}`}
+            style={{...rest.style}}
             onClick={() => toggleActiveChat(children.chat.id)}
             onContextMenu={e => {
                 e.preventDefault();

@@ -44,7 +44,7 @@ export default function Chat() {
     useEffect(() => {
         socket.on('CHAT:ON_MESSAGE', addMessage);
         socket.on('CHAT:TOGGLE_MESSAGES', setMessagesForActiveChat);
-        socket.on('CHAT_ALERT_MESSAGE', addAlertedChat);
+        socket.on('CHAT:ALERT_MESSAGE', addAlertedChat);
         //eslint-disable-next-line
     }, []);
 

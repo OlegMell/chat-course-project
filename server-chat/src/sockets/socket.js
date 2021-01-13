@@ -150,7 +150,7 @@ io.on('connection', socket => {
                 currentChat.alerted = true;
                 await currentChat.save();
                 userChats.alertedChats.push(chatName)
-                usersChats.get(addressee.email).socket.emit("CHAT_ALERT_MESSAGE", {chatName})
+                usersChats.get(addressee.email).socket.emit("CHAT:ALERT_MESSAGE", {chatName})
             }
         }
 

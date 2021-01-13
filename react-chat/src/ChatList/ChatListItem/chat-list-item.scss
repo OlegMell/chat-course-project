@@ -8,6 +8,10 @@
   height: 100px;
   cursor: pointer;
 
+  &:hover:not(.active-chat) {
+    background-color: rgba(#f77f00, .4);
+  }
+
   .img-wrapper {
     width: 50px;
     height: 50px;
@@ -31,7 +35,7 @@
     flex-direction: column;
     width: 70%;
     justify-content: space-between;
-    align-items: start;
+    align-items: flex-start;
 
     .last-msg {
       font-size: 13px;
@@ -58,4 +62,13 @@
       border-radius: 50%;
     }
   }
+}
+
+.dragged {
+  background-color: rgba(#f77f00, .4);
+  backdrop-filter: blur(20px);
+}
+
+.active-chat:not(.dragged) {
+  background-color: #f77f00;
 }

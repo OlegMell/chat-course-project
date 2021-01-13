@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import SortableList from "react-sortable-dnd-list";
 import ChatListItem from "./ChatListItem/ChatListItem";
 import AddChatBtn from "./AddChatBtn/AddChatBtn";
