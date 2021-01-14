@@ -16,7 +16,7 @@ let users = [];
 io.on('connection', socket => {
     socket.on('USER:AUTHORIZE', (userData) => {
         const accountService = new AccountService();
-        accountService.fichdOne(userData)
+        accountService.findOne(userData)
             .then(async user => {
                 // let g = new GoogleDriveService();
                 // const image = g.getImage(user.image);
@@ -107,12 +107,10 @@ io.on('connection', socket => {
                 for await (msg of messages) {
                     const from = await msg.getFrom();
                     if (from.email !== user) {
-                        await msg.update({
-                            read: true,
-                            where: {
-                                read: false
-                            }
-                        })
+                        await msg.update({read: true})
+                        const acc = await chat.getAccounts();
+                        const add = acc.find(item => item.email !== user);
+                        if(usersChats.has(add.email)) usersChats.get(add.email).socket.emit("MESSAGE:READ", {msg})
                     }
                 }
                 chatRoom = chat.name;

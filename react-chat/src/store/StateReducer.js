@@ -10,7 +10,8 @@ import {
     SHOW_LOADER,
     // SET_I_DATA,
     SET_DATA, UNSET_ACTIVE_CHAT,
-    REMOVE_MESSAGE
+    REMOVE_MESSAGE,
+    READ_MESSAGE,
 } from "./types";
 import socket from "../socket/socket";
 
@@ -102,11 +103,19 @@ export const StateReducer = ({children}) => {
         })
     }
 
+    const readMessage = ({msg}) => {
+        dispatch({
+            type: READ_MESSAGE,
+            payload: {msg}
+        })
+    }
+
 
     return (
         <StateContext.Provider value={{
             reload, addMessage, setMessagesForActiveChat, changeChatsOrder,
             addAlertedChat, addDraftMessage, unsetActiveChat, removeMessage,
+            readMessage,
             ...state
         }}>
             {children}

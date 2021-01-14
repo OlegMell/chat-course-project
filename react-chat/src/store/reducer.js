@@ -33,11 +33,15 @@ export default (state, action) => {
                 // },
                 activeChatMessages: {
                     ...state.activeChatMessages,
-                    [action.payload.chat.name] : {
+                    [action.payload.chat.name]: {
                         chat: action.payload.chat,
                         messages: action.payload.messages
                     }
                 },
+                existingChats: [...state.existingChats.filter(item => item.chat.name !== action.payload.chat.name), {
+                    chat: action.payload.chat,
+                    msg: action.payload.messages[action.payload.messages.length - 1],
+                }],
                 activeChat: action.payload.chat.name,
                 alertedChats: [
                     ...state.alertedChats.filter(chat => chat !== action.payload.chat.name)
@@ -65,7 +69,7 @@ export default (state, action) => {
                 ...state,
                 activeChatMessages: {
                     ...state.activeChatMessages,
-                    [action.payload.chat.name] : {
+                    [action.payload.chat.name]: {
                         chat: action.payload.chat,
                         messages: [...messages, action.payload.msg]
                     }
@@ -83,6 +87,17 @@ export default (state, action) => {
                 ]
             };
 
+
+        case types.READ_MESSAGE:
+            return {
+                ...state,
+                existingChats: [
+                    ...state.existingChats.map(item => {
+                        if (item.msg.id === action.payload.msg.id) item.msg = action.payload.msg
+                        return item;
+                    })
+                ]
+            }
 
         case types.REMOVE_ALERTED_CHAT:
             return {
@@ -125,9 +140,10 @@ export default (state, action) => {
                 ...state,
                 activeChatMessages: {
                     ...state.activeChatMessages,
-                    [action.payload.chat]:
-                        [...state.activeChatMessages[action.payload.chat]
-                            .filter(msg => msg.id !== action.payload.msgId)]
+                    [action.payload.chat]: {
+                        ...state.activeChatMessages[action.payload.chat],
+                        messages: state.activeChatMessages[action.payload.chat].messages.filter(item => item.id !== action.payload.msgId)
+                    }
                 }
             }
 

@@ -8,6 +8,8 @@ import MessageBox from "../messageBox/MessageBox";
 import {ActiveChatProvider} from "../activeChatContext/ActiveChatContext";
 import {Loader} from "../Loader";
 import {StateContext} from "../store/StateContext";
+import useSound from "use-sound";
+// import s from "telegram_soundin.mp3";
 
 import socket from "../socket/socket";
 
@@ -31,20 +33,26 @@ export default function Chat() {
         loading,
         unsetActiveChat,
         removeMessage,
-        existingChats
+        existingChats,
+        readMessage,
     } = useContext(StateContext);
+
+    const [play] = useSound('telegram_soundin.mp3');
+
 
     useEffect(() => {
         reload();
-        // const userEmail = localStorage.getItem('user-email');
-        // socket.emit('USER:AUTH', userEmail);
         //eslint-disable-next-line
     }, [])
 
     useEffect(() => {
-        socket.on('CHAT:ON_MESSAGE', addMessage);
+        socket.on('CHAT:ON_MESSAGE', ({chat, msg}) => {
+            addMessage({chat, msg});
+            play();
+        });
         socket.on('CHAT:TOGGLE_MESSAGES', setMessagesForActiveChat);
         socket.on('CHAT:ALERT_MESSAGE', addAlertedChat);
+        socket.on('MESSAGE:READ', readMessage);
         //eslint-disable-next-line
     }, []);
 
