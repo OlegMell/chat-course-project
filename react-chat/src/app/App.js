@@ -8,8 +8,9 @@ import PrivateRoute from "../routing/PrivateRoute";
 import Chat from "../chat/Chat";
 import Auth from "../auth/Auth";
 import Alert from "../alert/Alert";
-import { AlertProvider } from "../alert/AlertContext";
+import {AlertProvider} from "../alert/AlertContext";
 import {StateReducer} from "../store/StateReducer";
+import {SettingsContextProvider} from "../settings/settingsContext/SettingsContext";
 
 
 // export const AlertContext = React.createContext();
@@ -26,7 +27,9 @@ function App() {
                         </Route>
                         <PrivateRoute path='/chat'>
                             <StateReducer>
-                                <Chat/>
+                                <SettingsContextProvider>
+                                    <Chat/>
+                                </SettingsContextProvider>
                             </StateReducer>
                         </PrivateRoute>
                         <Route path='/'>

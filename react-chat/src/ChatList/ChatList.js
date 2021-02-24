@@ -9,7 +9,7 @@ import socket from "../socket/socket";
 import './chat-list.scss';
 
 
-export default function ChatList({chats, activeChat, setChats, alertedChats, unsetActiveChat, existingChats}) {
+export default function ChatList({chats, activeChat, setChats, alertedChats, unsetActiveChat, existingChats, updateChatList}) {
     const [isContactsOpened, setIsContactsOpened] = useState(false);
     const {changeIsActiveChat} = useActiveChat();
 
@@ -36,6 +36,13 @@ export default function ChatList({chats, activeChat, setChats, alertedChats, uns
         return () => {
             document.removeEventListener('keydown', escapeKeyDownHandler);
         }
+        //eslint-disable-next-line
+    }, [])
+
+    useEffect(() => {
+        socket.on("CHAT:ADD_CHAT", (chat) => {
+            updateChatList(chat)
+        })
         //eslint-disable-next-line
     }, [])
 

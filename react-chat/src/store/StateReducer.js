@@ -11,7 +11,7 @@ import {
     // SET_I_DATA,
     SET_DATA, UNSET_ACTIVE_CHAT,
     REMOVE_MESSAGE,
-    READ_MESSAGE,
+    READ_MESSAGE, UPDATE_CHAT_LIST,
 } from "./types";
 import socket from "../socket/socket";
 
@@ -41,7 +41,6 @@ export const StateReducer = ({children}) => {
         // }
         socket.emit('USER:AUTHORIZE', {email: localStorage.getItem('user-email')});
         socket.on('APP:SET_INIT_STATE', data => {
-            console.log(data);
             dispatch({
                 type: SET_DATA,
                 payload: data
@@ -110,12 +109,20 @@ export const StateReducer = ({children}) => {
         })
     }
 
+    const updateChatList = (chat) => {
+        console.log(chat);
+        dispatch({
+            type: UPDATE_CHAT_LIST,
+            payload: {chat}
+        })
+    }
+
 
     return (
         <StateContext.Provider value={{
             reload, addMessage, setMessagesForActiveChat, changeChatsOrder,
             addAlertedChat, addDraftMessage, unsetActiveChat, removeMessage,
-            readMessage,
+            readMessage, updateChatList,
             ...state
         }}>
             {children}

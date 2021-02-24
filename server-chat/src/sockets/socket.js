@@ -14,81 +14,161 @@ let users = [];
 
 
 io.on('connection', socket => {
-    socket.on('USER:AUTHORIZE', (userData) => {
+    socket.on('disconnect', () => {
+        console.log('DisconnectedError');
+
+    })
+
+    socket.on('USER:AUTHORIZE', async (userData) => {
         const accountService = new AccountService();
-        accountService.findOne(userData)
-            .then(async user => {
+        const user = await accountService.findOne(userData);
+
+        const existingChats = await user.getChats();
+        existingChats.forEach(chat => {
+            socket.join(chat.name);
+        });
+
+        let chatsWithLastMessage = [];
+        for await (chat of existingChats) {
+            let msgs = await chat.getMessages({limit: 1, order: [['createdAt', 'DESC']]})
+            if (msgs[0]) {
+                const from = await msgs[0].getFrom({raw: true});
+                const msg = msgs[0].dataValues;
+                msg.from = from;
+                chatsWithLastMessage.push({
+                    chat: chat.dataValues,
+                    msg
+                })
+            }
+        }
+
+
+        const alertedChats = existingChats.filter(chat => chat.alerted);
+        if (!usersChats.has(user.email)) {
+            usersChats.set(user.email, {
+                existingChats: chatsWithLastMessage,
+                activeChat: '',
+                alertedChats,
+                activeChatMessages: {},
+                chats: [],
+                draftMessages: [],
+                socket,
+            })
+        } else {
+            usersChats.get(user.email).socket = socket;
+            usersChats.get(user.email).activeChat = null;
+            usersChats.get(user.email).alertedChats = alertedChats;
+            usersChats.get(user.email).chats = [];
+            usersChats.get(user.email).activeChatMessages = {};
+            usersChats.get(user.email).existingChats = chatsWithLastMessage;
+            // usersChats.get(user.email).draftMessages = []
+        }
+
+        let isModify = false;
+        users.forEach(item => {
+            if (item[user.id]) {
+                item[user.id] = socket;
+                isModify = !isModify;
+            }
+        });
+
+        if (!isModify) {
+            users.push({[user.id]: socket});
+        }
+
+        const chatsRaw = await user.getChats();
+
+        let chats = [];
+
+        for await (let chat of chatsRaw) {
+            const accounts = await chat.getAccounts();
+            const addressee = accounts.filter(account => account.email !== user.email)[0];
+            chats.push({chat, addressee});
+        }
+
+        usersChats.get(user.email).chats = chats;
+
+        const state = {...usersChats.get(user.email), socket: null, user: user.dataValues};
+
+        socket.emit('APP:SET_INIT_STATE', state)
+
+
+            // .then(async user => {
                 // let g = new GoogleDriveService();
                 // const image = g.getImage(user.image);
 
-                const existingChats = await user.getChats();
-                existingChats.forEach(chat => {
-                    socket.join(chat.name);
-                });
+                // const existingChats = await user.getChats();
+                // existingChats.forEach(chat => {
+                //     socket.join(chat.name);
+                // });
 
-                let chatsWithLastMessage = [];
-                for await (chat of existingChats) {
-                    let msgs = await chat.getMessages({limit: 1, order: [['createdAt', 'DESC']]})
-                    if (msgs[0]) {
-                        const from = await msgs[0].getFrom({raw: true});
-                        const msg = msgs[0].dataValues;
-                        msg.from = from;
-                        chatsWithLastMessage.push({
-                            chat: chat.dataValues,
-                            msg
-                        })
-                    }
-                }
+                // let chatsWithLastMessage = [];
+                // for await (chat of existingChats) {
+                //     let msgs = await chat.getMessages({limit: 1, order: [['createdAt', 'DESC']]})
+                //     if (msgs[0]) {
+                //         const from = await msgs[0].getFrom({raw: true});
+                //         const msg = msgs[0].dataValues;
+                //         msg.from = from;
+                //         chatsWithLastMessage.push({
+                //             chat: chat.dataValues,
+                //             msg
+                //         })
+                //     }
+                // }
 
-                const alertedChats = existingChats.filter(chat => chat.alerted);
-                if (!usersChats.has(user.email)) {
-                    usersChats.set(user.email, {
-                        existingChats: chatsWithLastMessage,
-                        activeChat: '',
-                        alertedChats,
-                        activeChatMessages: {},
-                        chats: [],
-                        draftMessages: [],
-                        socket,
-                    })
-                } else {
-                    usersChats.get(user.email).socket = socket;
-                    usersChats.get(user.email).activeChat = null;
-                    usersChats.get(user.email).alertedChats = alertedChats;
-                    usersChats.get(user.email).chats = [];
-                    usersChats.get(user.email).activeChatMessages = {};
-                    usersChats.get(user.email).existingChats = chatsWithLastMessage;
-                    // usersChats.get(user.email).draftMessages = []
-                }
+                // console.log(chatsWithLastMessage);
+
+                // const alertedChats = existingChats.filter(chat => chat.alerted);
+                // if (!usersChats.has(user.email)) {
+                //     usersChats.set(user.email, {
+                //         existingChats: chatsWithLastMessage,
+                //         activeChat: '',
+                //         alertedChats,
+                //         activeChatMessages: {},
+                //         chats: [],
+                //         draftMessages: [],
+                //         socket,
+                //     })
+                // } else {
+                //     usersChats.get(user.email).socket = socket;
+                //     usersChats.get(user.email).activeChat = null;
+                //     usersChats.get(user.email).alertedChats = alertedChats;
+                //     usersChats.get(user.email).chats = [];
+                //     usersChats.get(user.email).activeChatMessages = {};
+                //     usersChats.get(user.email).existingChats = chatsWithLastMessage;
+                //     // usersChats.get(user.email).draftMessages = []
+                // }
 
 
-                let isModify = false;
-                users.forEach(item => {
-                    if (item[user.id]) {
-                        item[user.id] = socket;
-                        isModify = !isModify;
-                    }
-                });
-
-                if (!isModify) {
-                    users.push({[user.id]: socket});
-                }
-                const chatsRaw = await user.getChats();
-
-                let chats = [];
-
-                for await (let chat of chatsRaw) {
-                    const accounts = await chat.getAccounts();
-                    const addressee = accounts.filter(account => account.email !== user.email)[0];
-                    chats.push({chat, addressee});
-                }
-
-                usersChats.get(user.email).chats = chats;
-
-                const state = {...usersChats.get(user.email), socket: null, user: user.dataValues};
-
-                socket.emit('APP:SET_INIT_STATE', state)
-            });
+            //     let isModify = false;
+            //     users.forEach(item => {
+            //         if (item[user.id]) {
+            //             item[user.id] = socket;
+            //             isModify = !isModify;
+            //         }
+            //     });
+            //
+            //     if (!isModify) {
+            //         users.push({[user.id]: socket});
+            //     }
+            //     const chatsRaw = await user.getChats();
+            //
+            //     let chats = [];
+            //
+            //     for await (let chat of chatsRaw) {
+            //         const accounts = await chat.getAccounts();
+            //         const addressee = accounts.filter(account => account.email !== user.email)[0];
+            //         chats.push({chat, addressee});
+            //     }
+            //
+            //     usersChats.get(user.email).chats = chats;
+            //
+            //     console.log(usersChats.get(user.email))
+            //
+            //     const state = {...usersChats.get(user.email), socket: null, user: user.dataValues};
+            //
+            //     socket.emit('APP:SET_INIT_STATE', state)
+            // });
     });
 
     socket.on('CHAT:UNSET_ACTIVE_CHAT', ({user}) => {
@@ -98,6 +178,7 @@ io.on('connection', socket => {
 
     socket.on('CHAT:TOGGLE_ACTIVE', ({user, chatId}) => {
         activeChatId = chatId;
+        console.log(usersChats.get(user));
         usersChats.get(user).activeChat = chatId;
 
         const chatService = new ChatService();
@@ -204,6 +285,8 @@ io.on('connection', socket => {
                 chatService.create(md5(chatName)).then(async chat => {
                     if (!chat) {
                         socket.emit("CHAT:ERROR_CREATE_CHAT");
+
+                        return;
                     }
 
                     const currentUser = await accountService.findOne({email});
@@ -217,17 +300,30 @@ io.on('connection', socket => {
 
                     for await (let chat of chatsRaw) {
                         const accounts = await chat.getAccounts();
-                        const addressee = accounts.filter(account => account.email !== email)[0];
+                        const addressee = accounts.find(account => account.email !== email);
                         chats.push({chat, addressee});
                     }
 
-                    socket.emit('USER:SET_CHATS', chats);
+                    socket.emit('CHAT:ADD_CHAT', chat.dataValues);
                 })
             } else {
                 socket.emit("CHAT:EXIST");
             }
         });
     });
+
+    socket.on("APP:GET_SETTINGS", async (user) => {
+        const accountService = new AccountService();
+        const rawUserData = await accountService.findOne({email: user});
+        const data = rawUserData.dataValues;
+        console.log(data);
+
+        const settings = {
+            data
+        }
+
+        socket.emit("APP:GOT_SETTINGS", settings);
+    })
 });
 
 module.exports = io;

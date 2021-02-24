@@ -88,7 +88,7 @@ export default (state, action) => {
             };
 
 
-        case types.READ_MESSAGE:
+        case types.READ_MESSAGE: {
             return {
                 ...state,
                 existingChats: [
@@ -98,6 +98,7 @@ export default (state, action) => {
                     })
                 ]
             }
+        }
 
         case types.REMOVE_ALERTED_CHAT:
             return {
@@ -145,6 +146,15 @@ export default (state, action) => {
                         messages: state.activeChatMessages[action.payload.chat].messages.filter(item => item.id !== action.payload.msgId)
                     }
                 }
+            }
+
+        case types.UPDATE_CHAT_LIST:
+            return {
+                ...state,
+                existingChats: [
+                    ...state.existingChats,
+                    {chat: action.payload.chat, msg: {}}
+                ]
             }
 
         default:

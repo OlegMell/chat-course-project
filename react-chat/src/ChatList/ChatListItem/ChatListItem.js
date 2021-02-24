@@ -1,18 +1,13 @@
 import React from "react";
 import './chat-list-item.scss';
-// import {useActiveChat} from "../../activeChatContext/ActiveChatContext";
 
 
 export default function ChatListItem({dragging, dragged, children, ...rest}) {
-    const {toggleActiveChat, activeChat, alertedChats, existingChats} = rest;
+    const {toggleActiveChat, activeChat, existingChats} = rest;
     const currentUserEmail = localStorage.getItem("user-email");
 
     let res = '';
     const lastMsg = existingChats.find(item => item.chat.name === children.chat.name) || {};
-
-    if (alertedChats.length > 0) {
-        res = (lastMsg.msg.from.email !== currentUserEmail && !lastMsg.msg.read);
-    }
 
     let lastMsgDate;
     let currentDate;
@@ -23,7 +18,9 @@ export default function ChatListItem({dragging, dragged, children, ...rest}) {
 
     return (
         <div
-            className={`list-item ${dragged ? 'dragged' : ''} ${children.chat.name === activeChat ? 'active-chat' : ''}`}
+            className={`list-item ${dragged ? 'dragged' : ''} 
+            ${children.chat.name === activeChat ? 'active-chat' : ''} 
+            ${lastMsg?.msg?.read ? '' : 'blink'}`}
             style={{...rest.style}}
             onClick={() => toggleActiveChat(children.chat.id)}
             onContextMenu={e => {

@@ -64,12 +64,12 @@ export default function Auth() {
         <div
             className="container-sm vh-100 d-flex justify-content-center align-items-center">
           <div
-              className={'row h-50 w-100 rounded-lg bg-backdrop align-items-center'}>
+              className={'row h-50 rounded-lg bg-backdrop align-items-center'}>
             <div className="col p-3">
               <h1 className={'title'}>Messages</h1>
               <p className={'text-size'}>
                 <Link to={`${url}/sign-up`}>Create account</Link>
-                <br/> or <Link to={`${url}/sign-in`}>log in</Link></p>
+                <br/> or <Link to={`${url}/sign-in`}>Sign in</Link></p>
             </div>
             <div className="col p-3 h-100">
               <Switch>
